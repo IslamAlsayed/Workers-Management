@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+    <meta name="theme-color" content="#2563eb">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="stylesheet" href="./css/app.css">
+    <title>حضور اليوم</title>
+</head>
+
+<body>
+    <div id="app">
+        <header class="topbar">
+            <div class="brand">
+                <b>إدارة العمال 👷</b><small>حضور اليوم</small>
+            </div>
+            <button id="logoutBtn" class="ghost"><span>خروج</span></button>
+            <!-- <button class="icon" id="syncBtn"></button> -->
+        </header>
+        <main class="main">
+            <section class="heading">
+                <div><small>الحضور</small>
+                    <h1>حضور اليوم</h1>
+                    <p>غير محدد في البداية، ثم حاضر / غائب.</p>
+                </div>
+            </section>
+            <label class="date">التاريخ<input id="attendanceDate" type="date"></label>
+            <div id="attendanceList" class="list"></div>
+        </main>
+        <nav class="nav"><button data-page="index.html">⌂<small>الرئيسية</small></button><button data-page="workers.html">👥<small>العمال</small></button><button class="active"
+                data-page="attendance.html">✓<small>الحضور</small></button><button data-page="reports.html">▥<small>التقارير</small></button><button
+                data-page="settings.html">⚙<small>الإعدادات</small></button></nav>
+    </div>
+    <div id="toast"></div><input type="hidden" id="txWorkerId"><input type="hidden" id="txType">
+    <div class="overlay" id="transactionModal">
+        <div class="sheet">
+            <div class="handle"></div>
+            <div class="sheetHead">
+                <h2 id="txTitle">إضافة مصروف</h2><button class="close">×</button>
+            </div>
+            <form id="transactionForm" class="formGrid"><label>المبلغ<input id="txAmount" required min="1" type="number" inputmode="decimal"></label><label>السبب<textarea id="txReason"
+                        maxlength="120"></textarea></label>
+                <div class="actions"><button class="primary">حفظ</button></div>
+            </form>
+        </div>
+    </div>
+    <script src="./js/auth.js"></script>
+    <script src="./js/common.js"></script>
+    <script src="./js/attendance.js"></script>
+</body>
+
+</html>

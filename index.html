@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="theme-color" content="#2563eb" />
+    <link rel="icon" type="image/x-icon" href="./favicon.ico" />
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="stylesheet" href="./css/app.css" />
+    <title>إدارة العمال - الرئيسية</title>
+</head>
+
+<body>
+    <div id="app" style="height: 100%">
+        <header class="topbar">
+            <div class="brand">
+                <b>إدارة العمال 👷</b><small>إدارة يومك بسهولة</small>
+            </div>
+            <button id="logoutBtn" class="ghost"><span>خروج</span></button>
+            <!-- <button class="icon" id="syncBtn"></button> -->
+        </header>
+        <main class="main">
+            <section class="welcome">
+                <div>
+                    <small>اليوم</small>
+                    <h1>صباح الخير يا إسماعيل 👋</h1>
+                    <p>خلّي حسابات الشغل ماشية من غير ورق.</p>
+                </div>
+                <time id="today"></time>
+            </section>
+            <div class="stats">
+                <div>
+                    <span>👥</span><b id="workersCount">0</b><small>عامل</small>
+                </div>
+                <div>
+                    <span>✓</span><b id="presentCount">0</b><small>حاضر اليوم</small>
+                </div>
+                <div>
+                    <span>×</span><b id="absentCount">0</b><small>غائب اليوم</small>
+                </div>
+                <div>
+                    <span>💰</span><b id="wagesCount">0</b><small>أجور اليوم</small>
+                </div>
+            </div>
+            <section>
+                <div class="sectionHead">
+                    <div>
+                        <h2>إجراءات سريعة</h2>
+                        <small>أهم العمليات في ضغطة</small>
+                    </div>
+                </div>
+                <div class="quick">
+                    <button class="primary" data-page="attendance.html">
+                        <div>✓<b>حضور اليوم</b></div>
+                        <span>تسجيل الحضور والغياب</span>
+                    </button>
+                    <button id="quickExpense">
+                        <div>💳<b>إضافة مصروف</b></div>
+                        <span>سلفة أو مصروف عامل</span>
+                    </button>
+                    <button id="quickOvertime">
+                        <div>⚡<b>إضافة إضافي</b></div>
+                        <span>اختياري أو إجباري</span>
+                    </button>
+                    <button data-page="workers.html">
+                        <div>👤+<b>إضافة عامل</b></div>
+                        <span>إدارة العمال</span>
+                    </button>
+                </div>
+            </section>
+            <section>
+                <div class="sectionHead">
+                    <div>
+                        <h2>ملخص اليوم</h2>
+                        <small>نظرة سريعة على الحسابات</small>
+                    </div>
+                    <button class="link" data-page="reports.html">التفاصيل ←</button>
+                </div>
+                <div class="summary">
+                    <p><span>إجمالي اليومية</span><b id="dailyTotal">0 ج</b></p>
+                    <p><span>المصاريف / السلف</span><b id="expenseTotal">0 ج</b></p>
+                    <p><span>الإضافي</span><b id="overtimeTotal">0 ج</b></p>
+                    <p class="total"><span>الصافي</span><b id="netTotal">0 ج</b></p>
+                </div>
+            </section>
+        </main>
+        <nav class="nav">
+            <button class="active" data-page="index.html">
+                ⌂<small>الرئيسية</small></button><button data-page="workers.html">👥<small>العمال</small></button><button data-page="attendance.html">✓<small>الحضور</small></button><button
+                data-page="reports.html">▥<small>التقارير</small></button><button data-page="settings.html">⚙<small>الإعدادات</small></button>
+        </nav>
+    </div>
+    <div id="toast"></div>
+    <div class="overlay" id="transactionModal">
+        <div class="sheet">
+            <div class="handle"></div>
+            <div class="sheetHead">
+                <h2 id="txTitle">إضافة مصروف</h2>
+                <button class="close">×</button>
+            </div>
+            <form id="transactionForm" class="formGrid">
+                <label>العامل<select id="txWorkerId"></select></label><label>المبلغ<input id="txAmount" required min="1" type="number" inputmode="decimal" /></label><label>السبب<textarea id="txReason"
+                        maxlength="120"></textarea></label><input type="hidden" id="txType" />
+                <div class="actions">
+                    <button class="primary">حفظ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="./js/auth.js"></script>
+    <script src="./js/common.js"></script>
+    <script src="./js/dashboard.js"></script>
+    <script>
+        function fillWorkers() {
+            const s = document.getElementById("txWorkerId");
+            s.innerHTML = S.workers
+                .map((w) => `<option value="${w.id}">${w.name}</option>`)
+                .join("");
+        }
+        function quick(type) {
+            fillWorkers();
+            document.getElementById("txType").value = type;
+            document.getElementById("txTitle").textContent =
+                type === "expense" ? "إضافة مصروف" : "إضافة إضافي";
+            openModal("transactionModal");
+        }
+        document.getElementById("quickExpense").onclick = () => quick("expense");
+        document.getElementById("quickOvertime").onclick = () =>
+            quick("overtime");
+        bindModal("transactionModal");
+        document.getElementById("transactionForm").onsubmit = (e) => {
+            e.preventDefault();
+            const w = S.workers.find(
+                (x) => x.id === document.getElementById("txWorkerId").value,
+            ),
+                amount = Number(document.getElementById("txAmount").value),
+                type = document.getElementById("txType").value;
+            if (!w || amount <= 0) return toast("أدخل مبلغًا صحيحًا", true);
+            w[type] += amount;
+            save();
+            closeModal("transactionModal");
+            e.target.reset();
+            location.reload();
+            toast("تم الحفظ");
+        };
+    </script>
+</body>
+
+</html>

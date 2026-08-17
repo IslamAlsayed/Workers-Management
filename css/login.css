@@ -1,0 +1,55 @@
+.login-card {
+  max-width: 420px;
+  margin: 12vh auto;
+}
+.card,
+.stat {
+  background: #fff;
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 5px 20px #0000000b;
+  margin-bottom: 14px;
+}
+.muted {
+  color: #6b7280;
+}
+label span,
+#loginBtn {
+  display: block;
+  margin-top: 20px;
+}
+input,
+select,
+textarea,
+button {
+  font: inherit;
+}
+input,
+select,
+textarea {
+  width: 100%;
+  margin-top: 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  padding: 11px;
+  background: #fff;
+}
+textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+button {
+  border: 0;
+  border-radius: 12px;
+  padding: 10px 14px;
+  background: #e5e7eb;
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.primary {
+  background: #111827;
+  color: #fff;
+}

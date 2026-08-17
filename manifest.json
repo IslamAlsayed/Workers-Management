@@ -1,0 +1,10 @@
+{
+  "name": "إدارة العمال",
+  "short_name": "العمال",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "lang": "ar",
+  "dir": "rtl",
+  "theme_color": "#2563eb",
+  "background_color": "#f8fafc"
+}

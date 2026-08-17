@@ -1,0 +1,2 @@
+setupCommon();
+renderNav("settings");

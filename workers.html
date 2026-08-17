@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+    <meta name="theme-color" content="#2563eb">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="stylesheet" href="./css/app.css">
+    <title>إدارة العمال</title>
+</head>
+
+<body>
+    <div id="app">
+        <header class="topbar">
+            <div class="brand">
+                <b>إدارة العمال 👷</b><small>إدارة يومك بسهولة</small>
+            </div>
+            <button id="logoutBtn" class="ghost"><span>خروج</span></button>
+            <!-- <button class="icon" id="syncBtn"></button> -->
+        </header>
+        <main class="main">
+            <section class="heading">
+                <div><small>إدارة الفريق</small>
+                    <h1>العمال</h1>
+                    <p>أضف وعدّل بيانات العمال بسهولة.</p>
+                </div>
+                <button class="fab" id="addWorker">＋ عامل</button>
+            </section>
+            <div class="search">⌕<input id="search" placeholder="ابحث عن عامل..."></div>
+            <div id="workerList" class="list"></div>
+        </main>
+        <nav class="nav">
+            <button data-page="index.html">⌂<small>الرئيسية</small></button>
+            <button class="active" data-page="workers.html">👥<small>العمال</small></button>
+            <button data-page="attendance.html">✓<small>الحضور</small></button>
+            <button data-page="reports.html">▥<small>التقارير</small></button>
+            <button data-page="settings.html">⚙<small>الإعدادات</small></button>
+        </nav>
+    </div>
+    <div id="toast"></div><input type="hidden" id="deleteId">
+    <div class="overlay" id="workerModal">
+        <div class="sheet">
+            <div class="handle"></div>
+            <div class="sheetHead">
+                <h2 id="workerModalTitle">إضافة عامل</h2><button class="close">×</button>
+            </div>
+            <form id="workerForm" class="formGrid">
+                <label>الاسم<input id="workerName" required maxlength="80"></label>
+                <label>اليومية<input id="workerRate" required min="0" type="number" inputmode="decimal"></label>
+                <label>المهنة<input id="workerProfession" maxlength="250"></input></label>
+                <label>الملاحظات<textarea id="workerNote" maxlength="250"></textarea></label>
+                <div class="actions"><button class="primary">حفظ</button></div>
+            </form>
+        </div>
+    </div>
+    <div class="overlay" id="deleteModal">
+        <div class="sheet">
+            <div class="handle"></div>
+            <div class="sheetHead">
+                <h2>حذف عامل</h2><button class="close">×</button>
+            </div>
+            <p>هل أنت متأكد من حذف هذا العامل؟</p>
+            <div class="actions"><button class="primary" id="deleteConfirm">حذف</button></div>
+        </div>
+    </div>
+    <script src="./js/auth.js"></script>
+    <script src="./js/common.js"></script>
+    <script src="./js/workers.js"></script>
+</body>
+
+</html>
