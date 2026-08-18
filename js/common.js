@@ -117,8 +117,6 @@ function pageLinks() {
   );
 }
 function setupTheme() {
-  // switch text mode between الوضع النهاري and الوضع الليلي
-
   if ($("#textMode")) {
     $("#textMode").textContent =
       S.theme === "dark" ? "الوضع النهاري" : "الوضع الليلي";
@@ -131,6 +129,20 @@ function setupTheme() {
   });
   if ($("#themeText"))
     $("#themeText").textContent = S.theme === "dark" ? "مفتوح" : "مغلق";
+}
+const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+if (prefersDarkScheme.matches) {
+  document.body.classList.add("dark");
+  if ($("#themeText")) {
+    $("#themeText").textContent = "مفتوح";
+    localStorage.setItem("theme", "dark");
+  }
+} else {
+  document.body.classList.remove("dark");
+  if ($("#themeText")) {
+    $("#themeText").textContent = "مغلق";
+    localStorage.removeItem("theme");
+  }
 }
 function setupInstall() {
   let prompt;

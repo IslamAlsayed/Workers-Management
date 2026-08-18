@@ -11,6 +11,7 @@
   --bad: #ef4444;
   --warn: #f59e0b;
   --dark-bg: #283654;
+  /* --muted:  */
   --r: 18px;
   --shadow: 0 10px 30px #0f172a0d;
   --nav: 78px;
@@ -52,9 +53,9 @@ h2 {
 small {
   color: var(--m);
 }
-#app {
+/* #app {
   height: 100svh;
-}
+} */
 .topbar {
   height: 68px;
   position: sticky;
@@ -109,10 +110,19 @@ small {
   display: block;
   transform: translateY(-4px);
 }
+body.dark {
+  .ghost {
+    background: var(--dark-bg);
+  }
+}
 .main {
   max-width: 860px;
+  /* height: calc(100svh + 70px); */
+  height: 100%;
+  min-height: 100svh;
   margin: auto;
-  padding: 22px 16px calc(var(--nav) + 25px);
+  /* padding: 22px 16px calc(var(--nav) + 25px); */
+  padding: 22px 16px calc(var(--nav) + 5px);
 }
 /* .page {
   display: none;
@@ -315,10 +325,9 @@ small {
 }
 @media (max-width: 500px) {
   .attendance * {
-    font-size: 8px !important;
+    font-size: 9px !important;
   }
 }
-
 .worker,
 .attendance,
 .setting,
@@ -336,8 +345,8 @@ small {
   gap: 10px;
 }
 .avatar {
-  width: 45px;
-  height: 45px;
+  width: 35px;
+  height: 35px;
   border-radius: 13px;
   background: #eff6ff;
   color: var(--p);
@@ -409,6 +418,11 @@ body.dark {
     background: var(--dark-bg);
   }
 }
+@media (max-width: 500) {
+  .mini-action {
+    font-size: 8px !important;
+  }
+}
 .mini-action:active {
   transform: scale(0.97);
 }
@@ -442,12 +456,20 @@ body.dark {
   background: #fef2f2;
   color: var(--bad);
 }
+body.dark {
+  .present {
+    background: #195440;
+  }
+  .absent {
+    background: #4a1515;
+  }
+}
 .attendance-toggle {
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 8px 10px;
-  border: 1px solid var(--b);
+  border: 2px solid var(--b);
   border-radius: 999px;
   background: #f8fafc;
   color: var(--t);
@@ -458,27 +480,36 @@ body.dark {
   .attendance-toggle {
     padding: 5px;
   }
-
   input[type="checkbox"] {
     width: 5px;
     height: 5px;
   }
 }
-
 .attendance-toggle.present {
-  background: #ecfdf5;
+  background: #abffcb;
   color: var(--ok);
   border-color: var(--ok);
 }
 .attendance-toggle.absent {
-  background: #fef2f2;
+  background: #ff9c9c;
   color: var(--bad);
   border-color: var(--bad);
 }
 .attendance-toggle.empty {
-  background: #f8fafc;
+  background: #d9e6f7;
   color: var(--m);
   border-color: var(--b);
+}
+body.dark {
+  .attendance-toggle.present {
+    background: #285439;
+  }
+  .attendance-toggle.absent {
+    background: #2a0f21;
+  }
+  .attendance-toggle.empty {
+    background: #0f172a;
+  }
 }
 .attendance-toggle input {
   width: 16px;
@@ -539,6 +570,7 @@ label.form {
 }
 .report {
   padding: 15px;
+  margin-top: 20px;
 }
 @media (max-width: 500px) {
   .report * {
@@ -619,7 +651,7 @@ label.form {
   right: 0;
   left: 0;
   background: #fffef5f5;
-  backdrop-filter: blur(18px);
+  backdrop-filter: blur(10px);
   border-top: 1px solid var(--b);
   display: flex;
   justify-content: space-around;
@@ -703,7 +735,6 @@ body.dark {
     width: min(calc(100% - 20px), 620px);
   }
 }
-
 .overlay.active {
   display: flex;
 }
@@ -777,7 +808,6 @@ body.dark {
     font-size: 12px;
   }
 }
-
 .secondary {
   min-height: 50px;
   color: var(--t);
@@ -880,4 +910,76 @@ body.dark {
   opacity: 0.3;
   pointer-events: none;
   user-select: none;
+}
+
+/* =========================
+   App Footer
+========================= */
+
+.app-footer {
+  width: 100%;
+  /* margin-top: 30px; */
+  padding-inline: 20px;
+  color: var(--m);
+
+  /* position: fixed;
+  bottom: calc(var(--nav) + 30px);
+  left: 50%;
+  transform: translateX(-50%); */
+}
+.footer-content {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  text-align: center;
+}
+.footer-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.footer-logo {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  background: var(--primary-soft);
+  border-radius: 11px;
+  font-size: 18px;
+}
+.footer-brand strong {
+  display: block;
+  color: var(--text);
+  font-size: 13px;
+}
+.footer-brand span:last-child {
+  display: block;
+  margin-top: 3px;
+  font-size: 10px;
+  color: var(--m);
+}
+.footer-divider {
+  width: 45px;
+  height: 1px;
+  margin: 15px auto;
+  background: var(--border);
+}
+.footer-developer {
+  font-size: 11px;
+}
+.footer-developer span {
+  margin-left: 4px;
+}
+.footer-developer strong {
+  color: var(--primary);
+  font-size: 12px;
+}
+.footer-copy {
+  margin-top: 8px;
+  font-size: 9px;
+  color: var(--m);
 }
