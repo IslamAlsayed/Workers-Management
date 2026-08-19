@@ -5,17 +5,17 @@ let editingId = null;
 function renderWorkers() {
   const q = ($("#search").value || "").trim().toLowerCase();
   const workers = S.workers.filter((w) =>
-    `${w.name} ${w.profession}`.toLowerCase().includes(q),
+    `${w.name} ${w.profession} ${w.phone}`.toLowerCase().includes(q),
   );
-  console.log(workers);
+  // <a href="./worker.html?id=${w.id}">${w.name}</a>
   list.innerHTML = workers.length
     ? workers
         .map(
           (w) => `
     <article class="worker">
-    <div class="avatar">${w.name[0] || "👤"}</div>
+    <div class="avatar">${w.name[0] || "👤"}</div> 
       <div class="info">
-      <b>${w.name}</b><small>${w.profession || ""}</small>
+      <b>${w.name} - ${w.phone}</b><small>${w.profession || ""}</small>
       <small style="font-weight: 500; color: #0033d1">${w.note || "بدون ملاحظات"}</small>
         <span class="pill ${attendanceValue(w.id) === true ? "present" : attendanceValue(w.id) === false ? "absent" : "empty"}">${attendanceValue(w.id) === true ? "حاضر اليوم" : attendanceValue(w.id) === false ? "غائب اليوم" : "غير محدد"}</span>
       </div><div class="meta"><b>${money(w.rate)}</b><small>يومية</small>
@@ -36,6 +36,7 @@ function showWorker(worker) {
   $("#workerName").value = worker?.name || "";
   $("#workerRate").value = worker?.rate ?? "";
   $("#workerProfession").value = worker?.profession ?? "";
+  $("#workerPhone").value = worker?.phone ?? "";
   $("#workerNote").value = worker?.note || "";
   openModal("workerModal");
   $("#workerName").focus();
@@ -67,6 +68,7 @@ $("#workerForm").onsubmit = (e) => {
         name,
         rate,
         profession: $("#workerProfession").value.trim(),
+        phone: $("#workerPhone").value.trim(),
         note: $("#workerNote").value.trim(),
       },
     );
@@ -76,6 +78,7 @@ $("#workerForm").onsubmit = (e) => {
       name,
       rate,
       profession: $("#workerProfession").value.trim(),
+      phone: $("#workerPhone").value.trim(),
       note: $("#workerNote").value.trim(),
       expense: 0,
       overtime: 0,

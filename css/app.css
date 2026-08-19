@@ -32,9 +32,21 @@ body {
     sans-serif;
   -webkit-tap-highlight-color: transparent;
 }
-button,
-input {
+input,
+select,
+textarea,
+button {
   font: inherit;
+}
+input,
+select,
+textarea {
+  width: 100%;
+  margin-top: 6px;
+  border-radius: 12px;
+  padding: 11px;
+  background: var(--b);
+  color: var(--t);
 }
 button {
   cursor: pointer;
@@ -108,7 +120,7 @@ small {
 }
 .ghost span {
   display: block;
-  transform: translateY(-4px);
+  transform: translateY(-2px);
 }
 body.dark {
   .ghost {
@@ -686,6 +698,8 @@ body.dark {
   color: var(--p);
 }
 #toast {
+  width: fit-content;
+  margin: auto;
   position: fixed;
   z-index: 100;
   top: 78px;
@@ -910,6 +924,26 @@ body.dark {
   opacity: 0.3;
   pointer-events: none;
   user-select: none;
+}
+.layout-page {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  background: #edeff3;
+  opacity: 1;
+  visibility: visible;
+}
+.layout-page.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+body.dark {
+  .layout-page {
+    background: #0d1528;
+  }
 }
 
 /* =========================

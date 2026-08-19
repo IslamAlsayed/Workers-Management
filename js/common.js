@@ -16,10 +16,10 @@ function money(n) {
 }
 
 const DEFAULT_WORKERS = [
-  ["أحمد محمد", 350, "نجار", "صنايعي كويس"],
-  ["محمد علي", 400, "مساعد", "مساعد مجتهد"],
-  ["حسن السيد", 350, "حداد", "صنايعي بضين"],
-  ["علي محمود", 300, "حداد", "صنايعي بيلعب طول اليوم"],
+  ["أحمد محمد", 350, "نجار", "01065683544", "صنايعي كويس"],
+  ["محمد علي", 400, "مساعد", "01154843442", "مساعد مجتهد"],
+  ["حسن السيد", 350, "حداد", "01248418449", "صنايعي بضين"],
+  ["علي محمود", 300, "حداد", "01048794492", "صنايعي بيلعب طول اليوم"],
 ];
 
 function loadState() {
@@ -27,15 +27,18 @@ function loadState() {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
     if (saved) return normalize(saved);
   } catch {}
-  const workers = DEFAULT_WORKERS.map(([name, rate, profession, note]) => ({
-    id: id(),
-    name,
-    rate,
-    profession,
-    note,
-    expense: 0,
-    overtime: 0,
-  }));
+  const workers = DEFAULT_WORKERS.map(
+    ([name, rate, profession, phone, note]) => ({
+      id: id(),
+      name,
+      rate,
+      profession,
+      phone,
+      note,
+      expense: 0,
+      overtime: 0,
+    }),
+  );
   return normalize({
     theme: localStorage.getItem("theme") || "light",
     workers,
@@ -49,6 +52,7 @@ function normalize(state) {
     name: w.name || "",
     rate: Number(w.rate) || 0,
     profession: w.profession || "",
+    phone: w.phone || "",
     note: w.note || "",
     expense: Number(w.expense) || 0,
     overtime: Number(w.overtime) || 0,
@@ -103,10 +107,11 @@ function bindModal(id) {
     if (e.target === modal) closeModal(id);
   });
 }
-function toast(message, bad = false, color = null) {
+function toast(message, bad = false, bgColor = null, color = null) {
   const el = document.createElement("div");
   el.className = "toast";
-  el.style.backgroundColor = color;
+  el.style.backgroundColor = bgColor;
+  el.style.color = color;
   el.textContent = `${bad ? "×" : "✓"} ${message}`;
   $("#toast")?.append(el);
   setTimeout(() => el.remove(), 2200);
@@ -182,5 +187,10 @@ function renderNav(active) {
 document.addEventListener("DOMContentLoaded", () => {
   if (!location.pathname.includes("login.html")) {
     requireAuth();
+  }
+
+  const layoutPage = document.getElementById("layout-page");
+  if (layoutPage) {
+    setTimeout(() => layoutPage.classList.add("hidden"), 250);
   }
 });

@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./css/app.css" />
+    <link rel="stylesheet" href="./css/worker.css" />
+    <title>بيانات العامل</title>
+</head>
+
+<body>
+    <div id="app">
+        <header class="topbar">
+            <div class="brand">
+                <b>إدارة العمال 👷</b><small>إدارة يومك بسهولة</small>
+            </div>
+            <button id="logoutBtn" class="ghost"><span>خروج</span></button>
+            <!-- <button class="icon" id="syncBtn"></button> -->
+        </header>
+
+        <main class="worker-page">
+            <!-- Worker Header -->
+            <section class="worker-profile card" id="workerProfile">
+                <div class="loading">جاري تحميل بيانات العامل...</div>
+            </section>
+
+            <!-- Financial Summary -->
+            <section class="section">
+                <div class="section-title">
+                    <h2>الملخص المالي</h2>
+                </div>
+
+                <div class="stats2">
+                    <div class="stat">
+                        <small>اليومية</small>
+                        <b id="workerRate">0 ج</b>
+                    </div>
+
+                    <div class="stat">
+                        <small>إجمالي المصاريف</small>
+                        <b id="workerExpenses">0 ج</b>
+                    </div>
+
+                    <div class="stat">
+                        <small>إجمالي الإضافي</small>
+                        <b id="workerOvertime">0 ج</b>
+                    </div>
+
+                    <div class="stat">
+                        <small>المستحق</small>
+                        <b id="workerDue">0 ج</b>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Attendance -->
+            <section class="section card">
+                <div class="section-title">
+                    <h2>الحضور</h2>
+                    <span class="muted">هذا الأسبوع</span>
+                </div>
+
+                <div class="attendance-summary" id="attendanceSummary">
+                    جاري التحميل...
+                </div>
+            </section>
+
+            <!-- Notes -->
+            <section class="section card">
+                <div class="section-title">
+                    <h2>ملاحظات</h2>
+                </div>
+
+                <p id="workerNotes" class="worker-notes">لا توجد ملاحظات.</p>
+            </section>
+
+            <!-- Actions -->
+            <section class="section worker-actions-page">
+                <button class="btn primary" id="editWorkerBtn">
+                    ✎ تعديل بيانات العامل
+                </button>
+
+                <button class="btn secondary" id="backBtn">← العودة للعمال</button>
+            </section>
+        </main>
+    </div>
+
+    <script src="./js/auth.js"></script>
+    <script src="./js/common.js"></script>
+    <script src="./js/worker.js"></script>
+</body>
+
+</html>

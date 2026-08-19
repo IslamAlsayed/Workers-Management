@@ -1,10 +1,6 @@
-// Check LoggedIn or not
 if (isLoggedIn && isLoggedInMessage === "false") {
-  toast("تم تسجيل الدخول بنجاح", false, "#92ff8f");
+  toast("تم تسجيل الدخول بنجاح", false, "#92ff8f", "#000");
   sessionStorage.removeItem("isLoggedInMessage");
-  // } else {
-  //   toast("لم يتم تسجيل الدخول بنجاح", true, "#ff8e8e");
-  //   setTimeout(() => (window.location.href = "login.html"), 2200);
 }
 
 setupCommon();

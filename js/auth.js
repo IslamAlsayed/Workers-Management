@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // بعد نجاح الدخول
       window.location.href = "index.html";
     } else {
-      toast("اسم المستخدم أو كلمة المرور غير صحيحة", true);
+      toast("اسم المستخدم أو كلمة المرور غير صحيحة", true, "#ff8e8e", "#000");
     }
   });
 });
