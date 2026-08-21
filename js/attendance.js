@@ -1,5 +1,6 @@
 setupCommon();
 renderNav("attendance");
+
 const list = $("#attendanceList");
 function render() {
   const date = $("#attendanceDate").value || today();

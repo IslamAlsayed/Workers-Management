@@ -112,7 +112,8 @@ function toast(message, bad = false, bgColor = null, color = null) {
   el.className = "toast";
   el.style.backgroundColor = bgColor;
   el.style.color = color;
-  el.textContent = `${bad ? "×" : "✓"} ${message}`;
+  el.textContent = `${bad == null ? "" : bad ? "×" : "✓"} ${message}`;
+  // el.textContent = `${bad ? "×" : bad == null ? "✓" : ""} ${message}`;
   $("#toast")?.append(el);
   setTimeout(() => el.remove(), 2200);
 }
@@ -176,8 +177,8 @@ function renderNav(active) {
   const nav = $("#nav");
   if (!nav) return;
   nav.innerHTML = `
-    <a data-page="dashboard.html" class="nav-item"><span>🏠</span><small>الرئيسية</small></a>
-    <a data-page="attendance.html" class="nav-item"><span>📋</span><small>الحضور</small></a>
+  <a data-page="dashboard.html" class="nav-item"><span>🏠</span><small>الرئيسية</small></a>
+  <a data-page="attendance.html" class="nav-item"><span>📋</span><small>الحضور</small></a>
   `;
   $("[data-page]").forEach((x) =>
     x.classList.toggle("active", x.dataset.page === active),
@@ -194,3 +195,38 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => layoutPage.classList.add("hidden"), 250);
   }
 });
+
+const headerTag = document.getElementById("header");
+if (headerTag) {
+  fetch("../includes/header.html")
+    .then((result) => result.text())
+    .then((code) => {
+      headerTag.innerHTML = code;
+
+      // Logout
+      document.getElementById("logoutBtn")?.addEventListener("click", () => {
+        const layoutPage = document.getElementById("layout-page");
+        if (layoutPage) {
+          layoutPage.classList.remove("hidden");
+          layoutPage.classList.add("logout");
+          let count = 0;
+          let counter = setInterval(() => {
+            count++;
+            $("#toast")?.append(".");
+            if (count >= 3) {
+              sessionStorage.removeItem("isLoggedIn");
+              window.location.href = "login.html";
+              clearInterval(counter);
+            }
+          }, 500);
+        }
+      });
+    });
+}
+
+const footerTag = document.getElementById("footer");
+if (footerTag) {
+  fetch("../includes/footer.html")
+    .then((result) => result.text())
+    .then((code) => (footerTag.innerHTML = code));
+}

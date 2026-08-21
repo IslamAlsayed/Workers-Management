@@ -11,14 +11,9 @@
 </head>
 
 <body>
+    <div class="layout-page" id="layout-page"></div>
     <div id="app">
-        <header class="topbar">
-            <div class="brand">
-                <b>إدارة العمال 👷</b><small>حضور اليوم</small>
-            </div>
-            <button id="logoutBtn" class="ghost"><span>خروج</span></button>
-            <!-- <button class="icon" id="syncBtn"></button> -->
-        </header>
+        <div id="header"></div>
         <main class="main">
             <section class="heading">
                 <div><small>الحضور</small>
@@ -28,31 +23,28 @@
             </section>
             <label class="date">التاريخ<input id="attendanceDate" type="date"></label>
             <div id="attendanceList" class="list"></div>
-            <footer class="app-footer">
-                <div class="footer-content">
-                    <div class="footer-developer">
-                        <span>تطوير</span>
-                        <strong>إسلام القرعيشي - 01065438133</strong>
-                    </div>
-                    <div class="footer-copy">
-                        © 2026 جميع الحقوق محفوظة
-                    </div>
-                </div>
-            </footer>
+            <footer id="footer"></footer>
         </main>
-        <nav class="nav"><button data-page="index.html">⌂<small>الرئيسية</small></button><button data-page="workers.html">👥<small>العمال</small></button><button class="active"
-                data-page="attendance.html">✓<small>الحضور</small></button><button data-page="reports.html">▥<small>التقارير</small></button><button
-                data-page="settings.html">⚙<small>الإعدادات</small></button></nav>
+        <nav class="nav">
+            <button data-page="index.html">⌂<small>الرئيسية</small></button>
+            <button data-page="workers.html">👥<small>العمال</small></button>
+            <button class="active" data-page="attendance.html">✓<small>الحضور</small></button>
+            <button data-page="reports.html">▥<small>التقارير</small></button>
+            <button data-page="settings.html">⚙<small>الإعدادات</small></button>
+        </nav>
     </div>
-    <div id="toast"></div><input type="hidden" id="txWorkerId"><input type="hidden" id="txType">
+    <div id="toast"></div>
+    <input type="hidden" id="txWorkerId">
+    <input type="hidden" id="txType">
     <div class="overlay" id="transactionModal">
         <div class="sheet">
             <div class="handle"></div>
             <div class="sheetHead">
                 <h2 id="txTitle">إضافة مصروف</h2><button class="close">×</button>
             </div>
-            <form id="transactionForm" class="formGrid"><label>المبلغ<input id="txAmount" required min="1" type="number" inputmode="decimal"></label><label>السبب<textarea id="txReason"
-                        maxlength="120"></textarea></label>
+            <form id="transactionForm" class="formGrid">
+                <label>المبلغ<input id="txAmount" required min="1" type="number" inputmode="decimal"></label>
+                <label>السبب<textarea id="txReason" maxlength="120"></textarea></label>
                 <div class="actions"><button class="primary">حفظ</button></div>
             </form>
         </div>

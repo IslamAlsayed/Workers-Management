@@ -12,38 +12,23 @@
 </head>
 
 <body>
-    <!-- <div id="app" style="height: 100%;"> -->
     <div class="layout-page" id="layout-page"></div>
     <div id="app">
-        <header class="topbar">
-            <div class="brand">
-                <b>إدارة العمال 👷</b><small>إدارة يومك بسهولة</small>
-            </div>
-            <button id="logoutBtn" class="ghost"><span>خروج</span></button>
-            <!-- <button class="icon" id="syncBtn"></button> -->
-        </header>
+        <div id="header"></div>
         <main class="main">
             <section class="welcome">
                 <div>
                     <small>اليوم</small>
-                    <h1>صباح الخير يا إسماعيل 👋</h1>
-                    <p>خلّي حسابات الشغل ماشية من غير ورق.</p>
+                    <h1 id="welcomeMessageInner">صباح الخير يا إسماعيل 👋</h1>
+                    <p id="adminDescriptionInner">خلّي حسابات الشغل ماشية من غير ورق.</p>
                 </div>
                 <time id="today"></time>
             </section>
             <div class="stats">
-                <div>
-                    <span>👥</span><b id="workersCount">0</b><small>عامل</small>
-                </div>
-                <div>
-                    <span>✓</span><b id="presentCount">0</b><small>حاضر اليوم</small>
-                </div>
-                <div>
-                    <span>×</span><b id="absentCount">0</b><small>غائب اليوم</small>
-                </div>
-                <div>
-                    <span>💰</span><b id="wagesCount">0</b><small>أجور اليوم</small>
-                </div>
+                <div><span>👥</span><b id="workersCount">0</b><small>عامل</small></div>
+                <div><span>✓</span><b id="presentCount">0</b><small>حاضر اليوم</small></div>
+                <div><span>×</span><b id="absentCount">0</b><small>غائب اليوم</small></div>
+                <div><span>💰</span><b id="wagesCount">0</b><small>أجور اليوم</small></div>
             </div>
             <section>
                 <div class="sectionHead">
@@ -86,22 +71,14 @@
                     <p class="total"><span>الصافي</span><b id="netTotal">0 ج</b></p>
                 </div>
             </section>
-            <footer class="app-footer">
-                <div class="footer-content">
-                    <div class="footer-developer">
-                        <span>تطوير</span>
-                        <strong>إسلام القرعيشي - 01065438133</strong>
-                    </div>
-                    <div class="footer-copy">
-                        © 2026 جميع الحقوق محفوظة
-                    </div>
-                </div>
-            </footer>
+            <footer id="footer"></footer>
         </main>
         <nav class="nav">
-            <button class="active" data-page="index.html">
-                ⌂<small>الرئيسية</small></button><button data-page="workers.html">👥<small>العمال</small></button><button data-page="attendance.html">✓<small>الحضور</small></button><button
-                data-page="reports.html">▥<small>التقارير</small></button><button data-page="settings.html">⚙<small>الإعدادات</small></button>
+            <button class="active" data-page="index.html">⌂<small>الرئيسية</small></button>
+            <button data-page="workers.html">👥<small>العمال</small></button>
+            <button data-page="attendance.html">✓<small>الحضور</small></button>
+            <button data-page="reports.html">▥<small>التقارير</small></button>
+            <button data-page="settings.html">⚙<small>الإعدادات</small></button>
         </nav>
     </div>
     <div id="toast"></div>

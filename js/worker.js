@@ -79,42 +79,19 @@ function renderWorker(worker) {
 
 function renderAttendance(workerId) {
   const summary = getWorkerAttendance(workerId);
-
   document.getElementById("attendanceSummary").innerHTML = `
-
         <div class="attendance-item">
-
             <span>أيام الحضور</span>
-
-            <strong>
-                ${summary.present}
-            </strong>
-
+            <strong>${summary.present}</strong>
         </div>
-
-
         <div class="attendance-item">
-
             <span>أيام الغياب</span>
-
-            <strong>
-                ${summary.absent}
-            </strong>
-
+            <strong>${summary.absent}</strong>
         </div>
-
-
         <div class="attendance-item">
-
             <span>غير محدد</span>
-
-            <strong>
-                ${summary.unmarked}
-            </strong>
-
-        </div>
-
-    `;
+            <strong>${summary.unmarked}</strong>
+        </div>`;
 }
 
 // ===============================

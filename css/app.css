@@ -152,6 +152,7 @@ body.dark {
   align-items: flex-start;
 }
 .welcome {
+  position: relative;
   margin-bottom: 22px;
 }
 .welcome small,
@@ -173,6 +174,18 @@ body.dark {
   font-size: 11px;
   color: var(--m);
   white-space: nowrap;
+  position: absolute;
+  top: -10px;
+  left: -10px;
+}
+@media (max-width: 500px) {
+  .welcome {
+    margin-top: 20px;
+  }
+  .welcome time {
+    top: -30px;
+    left: -5px;
+  }
 }
 .stats {
   display: grid;
@@ -180,7 +193,7 @@ body.dark {
   gap: 10px;
 }
 .stats > div {
-  min-height: 105px;
+  /* min-height: 105px; */
   padding: 14px;
   background: var(--s);
   border: 1px solid var(--b);
@@ -335,11 +348,6 @@ body.dark {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 }
-@media (max-width: 500px) {
-  .attendance * {
-    font-size: 9px !important;
-  }
-}
 .worker,
 .attendance,
 .setting,
@@ -374,12 +382,21 @@ body.dark {
 .info {
   flex: 1;
 }
+.info-text {
+  gap: 5px;
+  display: flex;
+  align-items: center;
+}
 .info b,
 .info small {
   display: block;
 }
 .info b {
   font-size: 13px;
+  text-wrap: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 .info small {
   font-size: 10px;
@@ -390,7 +407,7 @@ body.dark {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 6px;
+  gap: 25px;
 }
 .meta b {
   display: block;
@@ -438,6 +455,13 @@ body.dark {
 .mini-action:active {
   transform: scale(0.97);
 }
+@media (max-width: 500px) {
+  .attendance .avatar *,
+  .attendance .info *,
+  .attendance .attendance-tools * {
+    font-size: 9px !important;
+  }
+}
 .attendance {
   justify-content: space-between;
 }
@@ -449,9 +473,9 @@ body.dark {
   gap: 5px;
   margin-right: auto;
 }
-.attendance-tools {
+/* .attendance-tools {
   margin-left: 8px;
-}
+} */
 .pill {
   display: inline-block;
   padding: 4px 7px;
@@ -468,6 +492,10 @@ body.dark {
   background: #fef2f2;
   color: var(--bad);
 }
+.empty {
+  background: #d9e6f7;
+  color: var(--m);
+}
 body.dark {
   .present {
     background: #195440;
@@ -475,14 +503,18 @@ body.dark {
   .absent {
     background: #4a1515;
   }
+  .empty {
+    background: #233150;
+    color: var(--m);
+  }
 }
 .attendance-toggle {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 10px;
-  border: 2px solid var(--b);
-  border-radius: 999px;
+  padding: 3px 10px;
+  border: 1px solid var(--b);
+  border-radius: 10px;
   background: #f8fafc;
   color: var(--t);
   font-size: 10px;
@@ -490,7 +522,8 @@ body.dark {
 }
 @media (max-width: 500px) {
   .attendance-toggle {
-    padding: 5px;
+    padding: 2px 5px;
+    font-size: 8px;
   }
   input[type="checkbox"] {
     width: 5px;
@@ -510,7 +543,7 @@ body.dark {
 .attendance-toggle.empty {
   background: #d9e6f7;
   color: var(--m);
-  border-color: var(--b);
+  border-color: var(--c);
 }
 body.dark {
   .attendance-toggle.present {
@@ -565,28 +598,38 @@ label.form {
   gap: 9px;
   margin-bottom: 11px;
 }
+.dates label {
+  font-size: 12px;
+}
+.date input,
+.dates input {
+  width: 100%;
+  margin-inline-start: 0;
+}
 @media (max-width: 500px) {
-  .dates {
-    grid-template-columns: 1fr;
+  .dates label {
+    font-size: 12px;
   }
   .date input,
   .dates input {
     width: 100%;
     margin-top: 10px;
-    margin-inline-start: 0;
   }
 }
 .wide {
   width: 100%;
-  height: 50px;
 }
 .report {
-  padding: 15px;
   margin-top: 20px;
+  padding-inline: 15px;
+  padding-block: 0;
 }
 @media (max-width: 500px) {
   .report * {
     font-size: 10px;
+  }
+  .report .reportRow > div:last-child * {
+    font-size: 12px;
   }
 }
 .reportHead,
@@ -617,6 +660,22 @@ label.form {
 }
 .reportSummary b {
   color: var(--p);
+}
+.net b {
+  font-weight: 700;
+  color: var(--pd);
+}
+.all-price {
+  font-size: 10px;
+  text-decoration: line-through;
+}
+.expense {
+  font-weight: 700;
+  color: #ef4444;
+}
+.overtime {
+  font-weight: 700;
+  color: #10b981;
 }
 .setting {
   width: 100%;
@@ -783,8 +842,9 @@ body.dark {
   height: 35px;
 }
 .formGrid {
-  display: grid;
   gap: 12px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
 }
 .formGrid label {
   display: grid;
@@ -792,6 +852,13 @@ body.dark {
   color: var(--m);
   font-size: 11px;
   font-weight: 800;
+}
+@media (max-width: 500px) {
+  .formGrid label:first-of-type,
+  .formGrid label:last-of-type,
+  .actions {
+    grid-column: span 2;
+  }
 }
 .formGrid input,
 .formGrid textarea {
@@ -810,9 +877,9 @@ body.dark {
   min-height: 90px;
 }
 .actions {
-  display: flex;
   gap: 8px;
-  margin-top: 20px;
+  display: flex;
+  /* margin-top: 20px; */
 }
 .actions > * {
   flex: 1;
@@ -936,14 +1003,18 @@ body.dark {
   opacity: 1;
   visibility: visible;
 }
-.layout-page.hidden {
-  opacity: 0;
-  visibility: hidden;
-}
 body.dark {
   .layout-page {
     background: #0d1528;
   }
+}
+.layout-page.logout {
+  opacity: 0.5;
+  visibility: visible;
+}
+.layout-page.hidden {
+  opacity: 0;
+  visibility: hidden;
 }
 
 /* =========================

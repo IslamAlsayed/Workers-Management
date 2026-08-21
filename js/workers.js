@@ -15,10 +15,13 @@ function renderWorkers() {
     <article class="worker">
     <div class="avatar">${w.name[0] || "👤"}</div> 
       <div class="info">
-      <b>${w.name} - ${w.phone}</b><small>${w.profession || ""}</small>
-      <small style="font-weight: 500; color: #0033d1">${w.note || "بدون ملاحظات"}</small>
+        <div class="info-text">
+          <b>${w.name} - <small>${w.phone}</small></b>
+        </div>
+        <p><small>${w.profession || ""}</small></p>
+        <small style="font-weight: 500; color: #0033d1">${w.note || "بدون ملاحظات"}</small>
         <span class="pill ${attendanceValue(w.id) === true ? "present" : attendanceValue(w.id) === false ? "absent" : "empty"}">${attendanceValue(w.id) === true ? "حاضر اليوم" : attendanceValue(w.id) === false ? "غائب اليوم" : "غير محدد"}</span>
-      </div><div class="meta"><b>${money(w.rate)}</b><small>يومية</small>
+        </div><div class="meta"><b><small>يومية</small> ${money(w.rate)}</b>
         <div class="worker-actions"><button class="mini-action" data-edit="${w.id}">تعديل</button><button class="mini-action" data-delete="${w.id}">حذف</button></div>
       </div></article>`,
         )
