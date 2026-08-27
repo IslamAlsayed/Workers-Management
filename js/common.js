@@ -492,10 +492,23 @@ try {
   setupTheme();
 } catch {}
 
-// Register Service Worker
+// Register Service Worker with Auto-Update Check & Reload
 if ("serviceWorker" in navigator) {
+  let refreshing = false;
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if (!refreshing) {
+      refreshing = true;
+      window.location.reload();
+    }
+  });
+
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js").catch(() => {});
+    navigator.serviceWorker
+      .register("./sw.js")
+      .then((reg) => {
+        reg.update();
+      })
+      .catch(() => {});
   });
 }
 

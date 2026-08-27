@@ -1,4 +1,4 @@
-const CACHE_NAME = "ommal-v1";
+const CACHE_NAME = "ommal-v2";
 const ASSETS = [
   "./",
   "./index.html",
@@ -44,18 +44,28 @@ self.addEventListener("activate", (event) => {
   );
 });
 
+// Network First strategy (Always try network for fresh code, fallback to cache when offline)
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
+
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) return cachedResponse;
-      return fetch(event.request)
-        .then((networkResponse) => networkResponse)
-        .catch(() => {
+    fetch(event.request)
+      .then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200) {
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache);
+          });
+        }
+        return networkResponse;
+      })
+      .catch(() => {
+        return caches.match(event.request).then((cachedResponse) => {
+          if (cachedResponse) return cachedResponse;
           if (event.request.headers.get("accept")?.includes("text/html")) {
             return caches.match("./index.html");
           }
         });
-    })
+      })
   );
 });
