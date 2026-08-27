@@ -68,7 +68,7 @@ function renderWorkers() {
               </div>
 
               <div class="meta">
-                <b><small>يومية</small>${money(w.rate)}</b>
+                <b><small>يومية</small> ${money(w.rate)}</b>
                 <div class="worker-actions">
                   <button class="mini-action" data-edit="${w.id}">تعديل</button>
                   <button class="mini-action" data-delete="${w.id}">حذف</button>

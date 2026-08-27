@@ -1,10 +1,17 @@
 {
-  "name": "إدارة العمال",
+  "name": "إدارة العمال - Ommal",
   "short_name": "العمال",
   "start_url": "./index.html",
   "display": "standalone",
   "lang": "ar",
   "dir": "rtl",
   "theme_color": "#2563eb",
-  "background_color": "#f8fafc"
+  "background_color": "#f8fafc",
+  "icons": [
+    {
+      "src": "./favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ]
 }

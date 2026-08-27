@@ -472,30 +472,50 @@ try {
   setupTheme();
 } catch {}
 
-function setupInstall() {
-  let prompt;
+// Register Service Worker
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(() => {});
+  });
+}
 
+// Global deferred prompt capture for PWA installation
+let deferredPwaPrompt = null;
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredPwaPrompt = e;
+  const installButton = document.getElementById("install");
+  if (installButton) {
+    installButton.hidden = false;
+  }
+});
+
+function setupInstall() {
   const installButton = $("#install");
   if (!installButton) return;
 
-  // يمنع تسجيل أكثر من Listener
-  if (installButton.dataset.themeBound === "true") {
-    return;
+  // Show button if install prompt is already captured
+  if (deferredPwaPrompt) {
+    installButton.hidden = false;
   }
 
-  installButton.dataset.themeBound = "true";
+  // Prevent binding multiple click listeners
+  if (installButton.dataset.installBound === "true") {
+    return;
+  }
+  installButton.dataset.installBound = "true";
 
-  window.addEventListener("beforeinstallprompt", (e) => {
-    e.preventDefault();
-    prompt = e;
-    if (installButton) installButton.hidden = false;
-  });
-
-  installButton?.addEventListener("click", async () => {
-    if (!prompt) return toast("التثبيت غير متاح حاليًا", true);
-    prompt.prompt();
-    await prompt.userChoice;
-    prompt = null;
+  installButton.addEventListener("click", async () => {
+    if (!deferredPwaPrompt) {
+      toast("التثبيت غير متاح حاليًا أو التطبيق مثبت بالفعل", true);
+      return;
+    }
+    deferredPwaPrompt.prompt();
+    const { outcome } = await deferredPwaPrompt.userChoice;
+    if (outcome === "accepted") {
+      toast("تمت إضافة التطبيق لشاشتك بنجاح", false, "#92ff8f", "#000");
+    }
+    deferredPwaPrompt = null;
     installButton.hidden = true;
   });
 }

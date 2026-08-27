@@ -543,7 +543,7 @@ body.dark {
 .attendance-toggle.empty {
   background: #d9e6f7;
   color: var(--m);
-  border-color: var(--c);
+  /* border-color: var(--c); */
 }
 body.dark {
   .attendance-toggle.present {
