@@ -1087,17 +1087,19 @@ body.dark {
 }
 
 /* =========================
-   Print Stylesheet
+   Dedicated Clean Print Stylesheet
 ========================= */
 @media print {
-  body {
-    background: #ffffff !important;
-    color: #000000 !important;
-  }
-  .nav,
-  .topbar,
   #header,
   #footer,
+  .nav,
+  .topbar,
+  .heading,
+  .search,
+  .quick,
+  .dates,
+  .report-actions-row,
+  .worker-actions-page,
   .fab,
   .mini-action,
   .worker-actions,
@@ -1106,25 +1108,68 @@ body.dark {
   .no-print,
   #toast,
   .overlay,
-  .search,
-  button {
+  button,
+  input,
+  select,
+  .layout-page {
     display: none !important;
   }
-  .main {
+
+  body, html {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 12pt !important;
     padding: 0 !important;
     margin: 0 !important;
   }
-  .card,
-  .report,
-  .worker {
+
+  #app, .main, body {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
     box-shadow: none !important;
-    border: 1px solid #ccc !important;
-    background: #fff !important;
-    color: #000 !important;
   }
-  .reportRow,
+
+  .card, .report, .worker {
+    box-shadow: none !important;
+    border: none !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    padding: 0 !important;
+    margin: 0 0 15px 0 !important;
+  }
+
+  .print-only-header {
+    display: block !important;
+  }
+
+  .reportHead, .reportRow {
+    border-bottom: 1px solid #999 !important;
+    padding: 8px 0 !important;
+    font-size: 11pt !important;
+    color: #000000 !important;
+  }
+
   .reportHead {
-    border-bottom: 1px solid #aaa !important;
-    color: #000 !important;
+    font-weight: bold !important;
+    background: #f0f0f0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .expense {
+    color: #dc2626 !important;
+    font-weight: bold !important;
+  }
+
+  .overtime {
+    color: #16a34a !important;
+    font-weight: bold !important;
+  }
+
+  .net b {
+    color: #000000 !important;
+    font-weight: bold !important;
   }
 }

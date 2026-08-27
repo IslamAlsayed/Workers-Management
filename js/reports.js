@@ -241,7 +241,15 @@ $("#reportBtn").onclick = () => {
   toast("تم تحديث التقرير");
 };
 
-$("#printReportBtn")?.addEventListener("click", () => window.print());
+$("#printReportBtn")?.addEventListener("click", () => {
+  const from = fromInput.value;
+  const to = toInput.value;
+  const printRangeEl = document.getElementById("printDateRange");
+  if (printRangeEl) {
+    printRangeEl.textContent = `الفترة من ${from} إلى ${to}`;
+  }
+  window.print();
+});
 $("#exportCsvBtn")?.addEventListener("click", exportReportCSV);
 
 fromInput.onchange = render;
