@@ -121,13 +121,20 @@
         bindModal("transactionModal");
         document.getElementById("transactionForm").onsubmit = (e) => {
             e.preventDefault();
+            const workerId = document.getElementById("txWorkerId").value;
             const w = S.workers.find(
-                (x) => x.id === document.getElementById("txWorkerId").value,
+                (x) => String(x.id) === String(workerId),
             ),
                 amount = Number(document.getElementById("txAmount").value),
                 type = document.getElementById("txType").value;
             if (!w || amount <= 0) return toast("أدخل مبلغًا صحيحًا", true);
-            w[type] += amount;
+            
+            const date = today();
+            S.transactions ||= {};
+            S.transactions[date] ||= {};
+            S.transactions[date][w.id] ||= { expense: 0, overtime: 0 };
+            S.transactions[date][w.id][type] = Number(S.transactions[date][w.id][type] || 0) + amount;
+
             save();
             closeModal("transactionModal");
             e.target.reset();

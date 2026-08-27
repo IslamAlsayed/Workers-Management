@@ -42,7 +42,7 @@ function renderWorkers() {
               <div class="info">
                 <div class="info-text">
                   <b>
-                    ${w.name || "بدون اسم"}
+                    <a href="worker.html?id=${w.id}" style="color:inherit;text-decoration:none;">${w.name || "بدون اسم"}</a>
                     ${w.phone ? `<small> - ${w.phone}</small>` : ""}
                   </b>
                 </div>
@@ -250,3 +250,15 @@ $("#deleteConfirm").onclick = () => {
 
 // Initial render
 renderWorkers();
+
+// Check URL parameters for edit worker request
+const urlParams = new URLSearchParams(window.location.search);
+const editParam = urlParams.get("edit");
+if (editParam && ensureActiveGroup()) {
+  const workerToEdit = (S.workers || []).find(
+    (w) => String(w.id) === String(editParam),
+  );
+  if (workerToEdit) {
+    showWorker(workerToEdit);
+  }
+}

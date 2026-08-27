@@ -51,13 +51,13 @@ function renderWorker(worker) {
 
   document.getElementById("workerRate").textContent = money(worker.rate);
 
-  // document.getElementById("workerExpenses").textContent = money(
-  //   getWorkerExpenses(worker.id),
-  // );
+  document.getElementById("workerExpenses").textContent = money(
+    getWorkerExpenses(worker.id),
+  );
 
-  // document.getElementById("workerOvertime").textContent = money(
-  //   getWorkerOvertime(worker.id),
-  // );
+  document.getElementById("workerOvertime").textContent = money(
+    getWorkerOvertime(worker.id),
+  );
 
   document.getElementById("workerDue").textContent = money(
     getWorkerDue(worker.id),
@@ -102,17 +102,31 @@ function getWorkerById(id) {
   return S.workers.find((worker) => String(worker.id) === String(id));
 }
 
-// function getWorkerExpenses(workerId) {
-//   return S.expenses
-//     .filter((item) => String(item.workerId) === String(workerId))
-//     .reduce((total, item) => total + Number(item.amount || 0), 0);
-// }
+function getWorkerExpenses(workerId) {
+  const worker = getWorkerById(workerId);
+  if (!worker) return 0;
+  let total = Number(worker.expense || 0);
+  const transactions = S.transactions || {};
+  Object.values(transactions).forEach((dayTx) => {
+    if (dayTx && dayTx[workerId] && dayTx[workerId].expense) {
+      total += Number(dayTx[workerId].expense || 0);
+    }
+  });
+  return total;
+}
 
-// function getWorkerOvertime(workerId) {
-//   return S.overtime
-//     .filter((item) => String(item.workerId) === String(workerId))
-//     .reduce((total, item) => total + Number(item.amount || 0), 0);
-// }
+function getWorkerOvertime(workerId) {
+  const worker = getWorkerById(workerId);
+  if (!worker) return 0;
+  let total = Number(worker.overtime || 0);
+  const transactions = S.transactions || {};
+  Object.values(transactions).forEach((dayTx) => {
+    if (dayTx && dayTx[workerId] && dayTx[workerId].overtime) {
+      total += Number(dayTx[workerId].overtime || 0);
+    }
+  });
+  return total;
+}
 
 function getWorkerDue(workerId) {
   const worker = getWorkerById(workerId);
@@ -125,12 +139,11 @@ function getWorkerDue(workerId) {
 
   const baseSalary = attendance.present * Number(worker.rate || 0);
 
-  // const expenses = getWorkerExpenses(workerId);
+  const expenses = getWorkerExpenses(workerId);
 
-  // const overtime = getWorkerOvertime(workerId);
+  const overtime = getWorkerOvertime(workerId);
 
-  // return baseSalary + overtime - expenses;
-  return baseSalary;
+  return baseSalary + overtime - expenses;
 }
 
 function getWorkerAttendance(workerId) {

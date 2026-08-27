@@ -87,8 +87,21 @@ function render() {
     });
 
     const rate = Number(worker.rate) || 0;
-    const expense = Number(worker.expense) || 0;
-    const overtime = Number(worker.overtime) || 0;
+    
+    let expense = 0;
+    let overtime = 0;
+    const transactions = S.transactions || {};
+
+    Object.entries(transactions).forEach(([date, dayTx]) => {
+      if (date >= from && date <= to && dayTx?.[worker.id]) {
+        expense += Number(dayTx[worker.id].expense || 0);
+        overtime += Number(dayTx[worker.id].overtime || 0);
+      }
+    });
+
+    if (expense === 0 && Number(worker.expense) > 0) expense = Number(worker.expense);
+    if (overtime === 0 && Number(worker.overtime) > 0) overtime = Number(worker.overtime);
+
     const wage = days * rate;
     const net = wage - expense + overtime;
 
