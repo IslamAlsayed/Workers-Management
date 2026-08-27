@@ -1,26 +1,80 @@
-# Ommal — Group Login Foundation
+# 👷 عمال (Ommal) — نظام إدارة العمال والحسابات الميدانية
 
-## Default groups
+تطبيق ويب متكامل وعصري لإدارة عمال ورش البناء والتشطيبات والمشاريع الميدانية، يساعد المقاولين والمشرفين على متابعة الحضور والغياب، السُلف، المصاريف، والإضافي، وحساب الصافي المالي بدقة وبدون أوراق.
 
-- ismail / 1234
-- hussein / 5678
-- ahmed / 9012
+---
 
-## Important behavior
+## ✨ أهم مميزات التطبيق (Features)
 
-- No active group exists before login.
-- Login authenticates against a group by `id + password`.
-- The authenticated `groupId` is stored in `sessionStorage` only.
-- Each group's application state is stored separately in LocalStorage:
-  `workers-phase1-state-{groupId}`.
-- Group definitions are stored separately under `workers-phase1-groups`.
+### 👥 1. إدارة العمال وملفاتهم الشاملة
+- إضافة، تعديل، وحذف العمال بسهولة.
+- تسجيل اليومية (أجر اليوم)، المهنة، رقم الهاتف، والملاحظات الخاصة بكل عامل.
+- ملف خاص لكل عامل (`worker.html`) يوضح إجمالي المستحقات، الحضور الأسبوعي، والمصاريف والإضافي.
 
-## Architecture
+### 📋 2. متابعة الحضور والغياب اليومي (Attendance Tracking)
+- تسجيل سريع للحضور والغياب يومياً بضغطة زر.
+- دعم تحديد أي تاريخ سابق أو قادم لتعديل أو مراجعة الحضور.
+- مؤشرات بصرية واضحة وحالات ميز بين الحاضر، الغائب، وغير المحدد.
 
-UI -> functions/repositories -> StorageAdapter -> LocalStorage
+### 💳 3. المصاريف، السُلف، والإضافي (Expenses & Overtime)
+- إمكانية إضافة مصروف/سلفة أو إضافي مباشرة من جدول الحضور اليومي أو من شاشة الرئيسية (الإجراءات السريعة).
+- ربط المعاملات المالية بالتواريخ بدقة لضمان عدم ضياع أي حسابات.
 
-When the real database is introduced, replace the storage/repository implementation with API calls. The page code should not need to know whether data comes from LocalStorage, IndexedDB, or Laravel API.
+### 📊 4. تقارير مالية مجمعة (Comprehensive Reports)
+- تقارير حسابية حسب الفترة الزمنية (تحديد تاريخ البداية والنهاية).
+- تجميع إجمالي أيام الحضور، أجر اليومية، المصاريف، والإضافي لكل عامل.
+- حساب الصافي المستحق وتصدير إجمالي الورشة/المشروع تلقائياً.
 
-## Prototype security note
+### 🔐 5. نظام المجموعات المعزولة (Isolated Group Workspaces)
+- دعم تسجيل الدخول باسم مجموعة وكلمة مرور.
+- إمكانية **إنشاء مجموعة جديدة** مباشرة من واجهة الدخول مع توليد معرف تلقائي.
+- عزل كامل وتام لبيانات كل مجموعة في التخزين المحلي لضمان الخصوصية والمنطق التعددي.
 
-Passwords are intentionally stored in LocalStorage for this prototype. This is NOT secure authentication. For production, credentials must be handled by a backend (Laravel), passwords must be hashed, and authorization must be enforced server-side.
+### 🌙 6. الوضع الليلي والنهاري (Dark / Light Mode)
+- دعم كامل للوضع الداكن والنهاري في جميع صفحات التطبيق لراحة العين أثناء الاستخدام في الموقع.
+
+### 📱 7. تطبيق ويب قابل للتثبيت ودعم الأوفلاين (PWA & Offline Support)
+- إمكانية تثبيت التطبيق على الهواتف (Android / iOS) والكمبيوتر كـ App مستقل.
+- دعم الـ Service Worker للتخزين المؤقت والعمل حتى في حالة عدم توفر اتصال بالإنترنت.
+
+---
+
+## 🏗️ المعمارية والتقنيات (Architecture & Tech Stack)
+
+- **الواجهة الأساسية**: Vanilla HTML5, Vanilla CSS3 (Custom Variables + Glassmorphism UI), Vanilla JavaScript (ES6+).
+- **نمط التصميم (Design Pattern)**:
+  ```text
+  UI (Pages) ➔ Repositories / GroupContext ➔ StorageAdapter ➔ LocalStorage / API
+  ```
+  تم فصل طبقة البيانات عن الواجهات بالكامل، مما يجعل التطبيق جاهزاً تماماً في المستقبل للربط مع **Laravel Backend API** أو **IndexedDB** دون الحاجة لتغيير كود الواجهات.
+
+---
+
+## 🔑 المجموعات الافتراضية للتجربة (Default Demo Groups)
+
+يمكنك تسجيل الدخول بالمجموعات الافتراضية التالية أو إنشاء مجموعتك الخاصة فوراً:
+
+| اسم المستخدم (Group ID) | كلمة المرور | اسم المجموعة |
+| :--- | :--- | :--- |
+| `ismail` | `1234` | مجموعة إسماعيل |
+| `hussein` | `5678` | مجموعة حسين |
+| `ahmed` | `9012` | مجموعة أحمد |
+
+*ملاحظة: يمكنك إنشاء أي عدد من المجموعات الجديدة ببيانات خاصة من شاشة الدخول.*
+
+---
+
+## 🛠️ التثبيت والتشغيل المحلي (Local Setup)
+
+1. قم بعمل `git clone` للمستودع:
+   ```bash
+   git clone https://github.com/IslamAlsayed/Workers-Management.git
+   ```
+2. افتح المجلد في أي خادم محلي (مثل Laragon, XAMPP, Live Server) أو افتح `index.html` في المتصفح مباشر.
+
+---
+
+## 📄 الحقوق والتطوير
+
+تطوير: **إسلام القرعيشي**  
+جميع الحقوق محفوظة © 2026
