@@ -187,19 +187,63 @@ function render() {
       </div>
     </div>
   `;
+
+  window.lastReportRows = rows;
 }
 
 /**
- * عرض التقرير
+ * تصدير التقرير كملف CSV / Excel
+ */
+function exportReportCSV() {
+  const rows = window.lastReportRows || [];
+  if (!rows.length) {
+    return toast("لا توجد بيانات لتصديرها", true);
+  }
+
+  const from = fromInput.value;
+  const to = toInput.value;
+  const headers = ["الاسم", "المهنة", "اليومية", "أيام الحضور", "المصاريف", "الإضافي", "الصافي المستحق"];
+
+  const csvLines = [
+    headers.join(",")
+  ];
+
+  rows.forEach((r) => {
+    csvLines.push([
+      `"${r.name || ""}"`,
+      `"${r.profession || ""}"`,
+      r.rate || 0,
+      r.days || 0,
+      r.expense || 0,
+      r.overtime || 0,
+      r.net || 0
+    ].join(","));
+  });
+
+  const blob = new Blob(["\uFEFF" + csvLines.join("\n")], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `تقرير_العمال_${from}_إلى_${to}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  toast("تم تصدير التقرير إلى Excel بنجاح");
+}
+
+/**
+ * الأحداث
  */
 $("#reportBtn").onclick = () => {
   render();
   toast("تم تحديث التقرير");
 };
 
-/**
- * تغيير التاريخ يعيد التقرير تلقائيًا
- */
+$("#printReportBtn")?.addEventListener("click", () => window.print());
+$("#exportCsvBtn")?.addEventListener("click", exportReportCSV);
+
 fromInput.onchange = render;
 toInput.onchange = render;
 

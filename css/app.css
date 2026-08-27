@@ -1085,3 +1085,46 @@ body.dark {
   font-size: 9px;
   color: var(--m);
 }
+
+/* =========================
+   Print Stylesheet
+========================= */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  .nav,
+  .topbar,
+  #header,
+  #footer,
+  .fab,
+  .mini-action,
+  .worker-actions,
+  .attendance-tools,
+  .link,
+  .no-print,
+  #toast,
+  .overlay,
+  .search,
+  button {
+    display: none !important;
+  }
+  .main {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .card,
+  .report,
+  .worker {
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+    background: #fff !important;
+    color: #000 !important;
+  }
+  .reportRow,
+  .reportHead {
+    border-bottom: 1px solid #aaa !important;
+    color: #000 !important;
+  }
+}

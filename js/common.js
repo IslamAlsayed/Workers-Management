@@ -292,6 +292,7 @@ function normalize(state) {
 
   const attendance = state.attendance || {};
   const transactions = state.transactions || {};
+  const settlements = state.settlements || [];
   const d = today();
 
   attendance[d] ||= {};
@@ -309,11 +310,28 @@ function normalize(state) {
     workers,
     attendance,
     transactions,
+    settlements,
     attendanceDate: state.attendanceDate || d,
   };
 }
 
 const S = loadState();
+
+function settleWorkerAccount(workerId, amount, note = "") {
+  if (!S || !workerId) return null;
+  S.settlements ||= [];
+  const entry = {
+    id: id(),
+    workerId: String(workerId),
+    amount: Number(amount) || 0,
+    settledAt: Date.now(),
+    date: today(),
+    note: note || "تصفية وتصفية حساب"
+  };
+  S.settlements.unshift(entry);
+  save();
+  return entry;
+}
 
 function save() {
   if (!GROUP_ID || !S) return;
@@ -566,7 +584,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let welcomeMessageInner = document.getElementById("welcomeMessageInner");
   if (welcomeMessageInner) {
     let nameActiveGroup = getActiveGroup().name.replace(/مجموعة /, "");
-    welcomeMessageInner.innerHTML = `صباح الخير يا ${nameActiveGroup} 👋`;
+    welcomeMessageInner.innerHTML = `صباح الخير، ${nameActiveGroup} 👋`;
   }
 });
 

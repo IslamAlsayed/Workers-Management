@@ -19,7 +19,7 @@
             <section class="welcome">
                 <div>
                     <small>اليوم</small>
-                    <h1 id="welcomeMessageInner">صباح الخير يا إسماعيل 👋</h1>
+                    <h1 id="welcomeMessageInner">صباح الخير ،إسماعيل 👋</h1>
                     <p id="adminDescriptionInner">خلّي حسابات الشغل ماشية من غير ورق.</p>
                 </div>
                 <time id="today"></time>
@@ -128,7 +128,7 @@
                 amount = Number(document.getElementById("txAmount").value),
                 type = document.getElementById("txType").value;
             if (!w || amount <= 0) return toast("أدخل مبلغًا صحيحًا", true);
-            
+
             const date = today();
             S.transactions ||= {};
             S.transactions[date] ||= {};

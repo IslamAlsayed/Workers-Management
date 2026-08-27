@@ -27,7 +27,11 @@
                     <label><span>من</span><input id="from" type="date" /></label>
                     <label><span>إلى</span><input id="to" type="date" /></label>
                 </div>
-                <button class="primary wide" id="reportBtn">عرض التقرير</button>
+                <div class="report-actions-row" style="display:flex;gap:8px;margin-top:10px;">
+                    <button class="primary wide" id="reportBtn">عرض التقرير</button>
+                    <button class="secondary" id="printReportBtn" title="طباعة التقرير" style="white-space:nowrap;">🖨️ طباعة</button>
+                    <button class="secondary" id="exportCsvBtn" title="تصدير Excel" style="white-space:nowrap;">📊 Excel</button>
+                </div>
             </div>
             <div id="report" class="list"></div>
             <footer id="footer"></footer>

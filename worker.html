@@ -68,6 +68,17 @@
                 <p id="workerNotes" class="worker-notes">لا توجد ملاحظات.</p>
             </section>
 
+            <!-- Chronological Activity Ledger -->
+            <section class="section card">
+                <div class="section-title" style="display:flex;justify-content:space-between;align-items:center;">
+                    <h2>🧾 سجل الحركة التفصيلي</h2>
+                    <button class="primary" id="settleAccountBtn" style="padding:6px 12px;font-size:12px;">💳 تسوية الحساب</button>
+                </div>
+                <div id="workerLedger" class="ledger-list" style="margin-top:10px;">
+                    <div class="loading">جاري تحميل سجل الحركة...</div>
+                </div>
+            </section>
+
             <!-- Actions -->
             <section class="section worker-actions-page">
                 <button class="btn primary" id="editWorkerBtn">
@@ -77,6 +88,26 @@
                 <button class="btn secondary" id="backBtn">← العودة للعمال</button>
             </section>
         </main>
+    </div>
+
+    <div id="toast"></div>
+
+    <!-- Settlement Modal -->
+    <div class="overlay" id="settlementModal">
+        <div class="sheet">
+            <div class="handle"></div>
+            <div class="sheetHead">
+                <h2>تسوية وتصفية حساب العامل</h2>
+                <button class="close" id="closeSettlementModal">×</button>
+            </div>
+            <form id="settlementForm" class="formGrid">
+                <label>المبلغ المسدد<input id="settleAmount" required min="0" type="number" inputmode="decimal" /></label>
+                <label>ملاحظة التسوية<textarea id="settleNote" maxlength="120" placeholder="مثال: تسوية أجر الأسبوع المالي"></textarea></label>
+                <div class="actions">
+                    <button type="submit" class="primary">تأكيد التصفية</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <script src="./js/auth.js"></script>
