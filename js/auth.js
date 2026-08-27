@@ -5,6 +5,8 @@
 
 const AUTH_KEY = "workers-auth";
 const LOGIN_MESSAGE_KEY = "workers-login-message";
+const isLoggedIn = sessionStorage.getItem("isLoggedIn", "false");
+const isLoggedInMessage = sessionStorage.getItem("isLoggedInMessage", "true");
 
 function getAuth() {
   try {
@@ -51,6 +53,8 @@ function login(groupId, password) {
 function logout() {
   sessionStorage.removeItem(AUTH_KEY);
   sessionStorage.setItem(LOGIN_MESSAGE_KEY, "true");
+  sessionStorage.getItem("isLoggedIn");
+  sessionStorage.getItem("isLoggedInMessage");
   window.location.href = "login.html";
 }
 
