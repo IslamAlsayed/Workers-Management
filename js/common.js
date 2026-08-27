@@ -415,7 +415,15 @@ function pageLinks() {
 }
 
 function setupTheme() {
-  if (!S) return;
+  const isDark = S?.theme
+    ? S.theme === "dark"
+    : localStorage.getItem(THEME_KEY) === "dark";
+
+  if (document.body) {
+    document.body.classList.toggle("dark", isDark);
+  }
+  document.documentElement.classList.toggle("dark", isDark);
+
   const themeButton = $("#theme");
   if (!themeButton) return;
 
@@ -427,7 +435,9 @@ function setupTheme() {
   themeButton.dataset.themeBound = "true";
 
   function updateThemeUI() {
-    const isDark = S.theme === "dark";
+    const isDark = S?.theme
+      ? S.theme === "dark"
+      : localStorage.getItem(THEME_KEY) === "dark";
 
     if ($("#textMode")) {
       $("#textMode").textContent = isDark ? "الوضع النهاري" : "الوضع الليلي";
@@ -437,17 +447,30 @@ function setupTheme() {
       $("#themeText").textContent = isDark ? "مفتوح" : "مغلق";
     }
 
-    document.body.classList.toggle("dark", isDark);
+    if (document.body) {
+      document.body.classList.toggle("dark", isDark);
+    }
+    document.documentElement.classList.toggle("dark", isDark);
   }
 
   updateThemeUI();
 
   themeButton.addEventListener("click", () => {
-    S.theme = S.theme === "dark" ? "light" : "dark";
-    save();
+    if (S) {
+      S.theme = S.theme === "dark" ? "light" : "dark";
+      save();
+    } else {
+      const current = localStorage.getItem(THEME_KEY);
+      localStorage.setItem(THEME_KEY, current === "dark" ? "light" : "dark");
+    }
     updateThemeUI();
   });
 }
+
+// Apply theme immediately on script execution
+try {
+  setupTheme();
+} catch {}
 
 function setupInstall() {
   let prompt;
