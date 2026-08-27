@@ -97,18 +97,20 @@ const GroupRepository = {
 
   create(data) {
     const groups = this.all();
+    const groupId = (data.id || id()).trim().toLowerCase();
+
+    if (groups.some((item) => String(item.id).toLowerCase() === groupId)) {
+      throw new Error("معرف المجموعة مستخدم بالفعل، اختر معرفاً آخر");
+    }
+
     const group = {
-      id: data.id || id(),
-      name: data.name || "مجموعة جديدة",
-      password: data.password || "1234",
-      description: data.description || "",
+      id: groupId,
+      name: data.name?.trim() || "مجموعة جديدة",
+      password: String(data.password || "1234").trim(),
+      description: data.description?.trim() || "",
       active: true,
       createdAt: Date.now(),
     };
-
-    if (groups.some((item) => item.id === group.id)) {
-      throw new Error("Group ID already exists");
-    }
 
     groups.push(group);
     this.save(groups);

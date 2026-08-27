@@ -8,23 +8,62 @@
     <link rel="manifest" href="./manifest.json" />
     <link rel="stylesheet" href="./css/app.css" />
     <link rel="stylesheet" href="./css/login.css" />
-    <title>إدارة العمال - الرئيسية</title>
+    <title>إدارة العمال - تسجيل الدخول</title>
 </head>
 
 <body>
     <section id="loginView" class="view">
         <div class="card login-card">
-            <h1>إدارة العمال</h1>
-            <p class="muted">سجل الدخول لإدارة مجموعة العمال</p>
-            <label>
-                <span>اسم المستخدم</span>
-                <input id="username" autocomplete="username" />
-            </label>
-            <label>
-                <span>كلمة المرور</span>
-                <input id="password" type="password" inputmode="numeric" autocomplete="current-password">
-            </label>
-            <button id="loginBtn" class="primary">دخول</button>
+            <div class="brand-header">
+                <div class="app-icon">👷</div>
+                <h1>إدارة العمال</h1>
+                <p class="muted" id="authSubtitle">سجل الدخول لإدارة مجموعة العمال</p>
+            </div>
+
+            <!-- Auth Tabs -->
+            <div class="auth-tabs">
+                <button type="button" class="auth-tab active" id="tabLogin">
+                    🔑 تسجيل الدخول
+                </button>
+                <button type="button" class="auth-tab" id="tabRegister">
+                    ✨ مجموعة جديدة
+                </button>
+            </div>
+
+            <!-- Form 1: Login -->
+            <div id="loginFormContainer" class="form-section">
+                <label>
+                    <span>اسم المستخدم (معرف المجموعة)</span>
+                    <input id="username" placeholder="مثال: ismail" autocomplete="username" autofocus />
+                </label>
+                <label>
+                    <span>كلمة المرور</span>
+                    <input id="password" type="password" placeholder="••••" inputmode="numeric" autocomplete="current-password" />
+                </label>
+                <button id="loginBtn" class="primary wide">دخول المجموعه ←</button>
+            </div>
+
+            <!-- Form 2: Create New Group -->
+            <div id="registerFormContainer" class="form-section" style="display: none;">
+                <label>
+                    <span>اسم المجموعة</span>
+                    <input id="regGroupName" placeholder="مثال: مجموعة ورشة النصر" autocomplete="off" />
+                </label>
+                <label>
+                    <span>معرف المجموعة (اسم المستخدم للدخول)</span>
+                    <input id="regGroupId" placeholder="مثال: el-nasr" autocomplete="off" />
+                    <small class="field-hint">يُستخدم للدخول إلى المجموعة</small>
+                </label>
+                <label>
+                    <span>كلمة المرور للمجموعة</span>
+                    <input id="regPassword" type="password" placeholder="4 أرقام أو أكثر" inputmode="numeric" autocomplete="new-password" />
+                </label>
+                <label>
+                    <span>وصف المجموعة (اختياري)</span>
+                    <input id="regDescription" placeholder="مثال: عمال المعمار والتشطيبات" autocomplete="off" />
+                </label>
+                <button id="registerBtn" class="primary wide">إنشاء المجموعة والدخول ✨</button>
+            </div>
         </div>
     </section>
     <div id="toast"></div>
