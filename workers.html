@@ -45,7 +45,7 @@
                 <label>الاسم<input id="workerName" required maxlength="80"></label>
                 <label>اليومية<input id="workerRate" required min="0" type="number" inputmode="decimal"></label>
                 <label>المهنة<input id="workerProfession" maxlength="250"></input></label>
-                <label>رقم الفون<input id="workerPhone" minlength="11" maxlength="15" type="number" pattern="[0-9]{11}"></input></label>
+                <label>رقم الفون<input id="workerPhone" minlength="11" maxlength="15" type="tel" inputmode="numeric" pattern="[0-9]{11,15}"></label>
                 <label>الملاحظات<textarea id="workerNote" maxlength="250"></textarea></label>
                 <div class="actions"><button class="primary">حفظ</button></div>
             </form>

@@ -7,6 +7,7 @@
     <meta name="theme-color" content="#2563eb" />
     <link rel="manifest" href="./manifest.json" />
     <link rel="stylesheet" href="./css/app.css" />
+    <link rel="stylesheet" href="./css/toast.css" />
     <title>الإعدادات</title>
 </head>
 
@@ -40,6 +41,14 @@
                     </div>
                     <em>تثبيت</em>
                 </button>
+                <button class="setting" id="clearData">
+                    <span>🗑️</span>
+                    <div>
+                        <b>مسح بيانات المجموعة</b>
+                        <small>حذف العمال والحضور والمصاريف والتقارير</small>
+                    </div>
+                    <em>مسح</em>
+                </button>
             </div>
             <section style="margin-block: 40px;">
                 <div class="sheetHead">
@@ -47,20 +56,12 @@
                 </div>
                 <form id="adminForm" class="formGrid">
                     <label>
-                        رسالة ترحيبية
-                        <input id="welcomeMessage" maxlength="80" />
-                    </label>
-                    <label>
                         اسم المستخدم
-                        <input id="adminName" maxlength="80" />
+                        <input id="username" maxlength="80" disabled class="disable" />
                     </label>
                     <label>
                         كلمة المرور
-                        <input id="adminPassword" minlength="3" maxlength="100" />
-                    </label>
-                    <label>
-                        الوصف
-                        <textarea id="adminDescription" maxlength="250"></textarea>
+                        <input id="password" minlength="3" maxlength="100" />
                     </label>
                     <div class="actions">
                         <button class="primary">حفظ</button>
@@ -77,9 +78,37 @@
             <button class="active" data-page="settings.html">⚙<small>الإعدادات</small></button>
         </nav>
     </div>
+    <div class="overlay" id="clearDataModal">
+        <div class="sheet confirm-sheet">
+            <div class="handle"></div>
+
+            <div class="sheetHead">
+                <h2>مسح البيانات</h2>
+                <button class="close" data-close-clear>×</button>
+            </div>
+
+            <div class="confirm-content">
+                <div class="danger-icon">🗑️</div>
+                <h3>هل أنت متأكد؟</h3>
+                <p>سيتم حذف جميع بيانات المجموعة الحالية، بما في ذلك:</p>
+                <ul>
+                    <li>العمال</li>
+                    <li>الحضور والغياب</li>
+                    <li>المصاريف</li>
+                    <li>الإضافي</li>
+                    <li>التقارير</li>
+                </ul>
+                <div class="warning-box">⚠️ هذا الإجراء لا يمكن التراجع عنه.</div>
+            </div>
+            <div class="actions confirm-actions">
+                <button type="button" class="secondary" id="cancelDataModal" data-close-clear>إلغاء</button>
+                <button type="button" class="danger" id="clearDataConfirm">نعم، امسح البيانات</button>
+            </div>
+        </div>
+    </div>
     <div id="toast"></div>
-    <script src="./js/auth.js"></script>
     <script src="./js/common.js"></script>
+    <script src="./js/auth.js"></script>
     <script src="./js/settings.js"></script>
 </body>
 

@@ -773,7 +773,7 @@ body.dark {
   padding: 12px 15px;
   border-radius: 14px;
   background: var(--s);
-  border: 1px solid var(--b);
+  /* border: 1px solid var(--b); */
   box-shadow: 0 12px 35px #638cec20;
   font-size: 12px;
   animation: in 0.2s;
@@ -821,7 +821,7 @@ body.dark {
   height: 4px;
   border-radius: 9px;
   background: var(--b);
-  margin: 2px auto 15px;
+  margin: 2px auto 5px;
 }
 .sheetHead {
   display: flex;
@@ -853,12 +853,9 @@ body.dark {
   font-size: 11px;
   font-weight: 800;
 }
-@media (max-width: 500px) {
-  .formGrid label:first-of-type,
-  .formGrid label:last-of-type,
-  .actions {
-    grid-column: span 2;
-  }
+form:has(.actions) .actions,
+.formGrid label:has(textarea) {
+  grid-column: span 2;
 }
 .formGrid input,
 .formGrid textarea {
@@ -988,7 +985,7 @@ body.dark {
   background: #172554;
 }
 .disable {
-  opacity: 0.3;
+  opacity: 0.7;
   pointer-events: none;
   user-select: none;
 }

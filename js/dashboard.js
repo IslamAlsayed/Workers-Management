@@ -1,4 +1,4 @@
-if (isLoggedIn && isLoggedInMessage === "false") {
+if (isAuthenticated() && isLoggedIn && isLoggedInMessage === "false") {
   toast("تم تسجيل الدخول بنجاح", false, "#92ff8f", "#000");
   sessionStorage.removeItem("isLoggedInMessage");
 }

@@ -1,0 +1,75 @@
+.confirm-sheet {
+  max-width: 440px;
+}
+.confirm-content {
+  text-align: center;
+  padding: 10px 20px 20px;
+}
+.danger-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #fff0f0;
+  color: #d93025;
+  font-size: 28px;
+}
+.confirm-content h3 {
+  margin: 0 0 8px;
+  font-size: 20px;
+}
+.confirm-content p {
+  margin: 0 0 12px;
+  color: #666;
+  font-size: 14px;
+}
+.confirm-content ul {
+  text-align: right;
+  margin: 0 auto 15px;
+  padding-right: 20px;
+  color: #555;
+  font-size: 14px;
+}
+body.dark {
+  .confirm-content p,
+  .confirm-content ul {
+    color: #fff0f0;
+  }
+}
+.confirm-content li {
+  margin-bottom: 5px;
+}
+.warning-box {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #fff7e6;
+  color: #9a6700;
+  font-size: 13px;
+}
+body.dark {
+  .warning-box {
+    background: #f2ddae;
+    color: #9f6a00;
+  }
+}
+.confirm-actions {
+  display: flex;
+  gap: 10px;
+}
+.confirm-actions button {
+  flex: 1;
+}
+.danger {
+  border: 0;
+  border-radius: 10px;
+  background: #d93025;
+  color: white;
+  padding: 12px 16px;
+  cursor: pointer;
+}
+.danger:hover {
+  background: #b42318;
+}
