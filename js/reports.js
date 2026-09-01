@@ -221,13 +221,13 @@ function exportReportCSV() {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 
-  toast("تم تصدير التقرير إلى Excel بنجاح", null, "#92ff8f", "#000");
+  toast("تم تصدير التقرير إلى Excel بنجاح", null, "#92ff8f");
 }
 
 // عرض التقرير
 $("#reportBtn").onclick = () => {
   render();
-  toast("تم تحديث التقرير", null, "#92ff8f", "#000");
+  toast("تم تحديث التقرير", null, "#92ff8f");
 };
 
 $("#exportPdfBtn")?.addEventListener("click", exportReportPDF);

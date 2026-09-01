@@ -178,7 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const result = login(groupId, groupPassword);
       if (!result.ok) {
-        toast(result.message, true, "#ff8e8e", "#000");
+        toast(result.message, true, "#ff8e8e");
         return;
       }
 
@@ -256,23 +256,13 @@ document.addEventListener("DOMContentLoaded", () => {
         registerBtn.disabled = true;
         registerBtn.textContent = "جاري الإنشاء...";
 
-        toast(
-          "تم إنشاء المجموعة وتسجيل الدخول بنجاح! 🎉",
-          false,
-          "#92ff8f",
-          "#000",
-        );
+        toast("تم إنشاء المجموعة وتسجيل الدخول بنجاح! 🎉", false, "#92ff8f");
 
         setTimeout(() => {
           window.location.href = "index.html";
         }, 600);
       } catch (err) {
-        toast(
-          err.message || "حدث خطأ أثناء إنشاء المجموعة",
-          true,
-          "#ff8e8e",
-          "#000",
-        );
+        toast(err.message || "حدث خطأ أثناء إنشاء المجموعة", true, "#ff8e8e");
       }
     });
 
@@ -324,7 +314,7 @@ function setupCredentialsForm() {
       password: newPassword,
     });
 
-    toast("تم تغيير البيانات بنجاح", false, "#92ff8f", "#000");
+    toast("تم تغيير البيانات بنجاح", false, "#92ff8f");
     password.value = newPassword;
   });
 }

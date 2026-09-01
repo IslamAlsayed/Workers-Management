@@ -62,16 +62,15 @@ function markVersionAsSeen() {
 }
 
 function showUpdateNotification() {
-  if (!isNewVersion()) return;
+  if (!isNewVersion() || !isAuthenticated()) return;
   markVersionAsSeen();
 
   setTimeout(() => {
     toast(
-      `تم تحديث التطبيق إلى الإصدار ${APP_VERSION} 🚀`,
+      `🚀 تم تحديث التطبيق إلى الإصدار ${APP_VERSION} — يمكنك معرفة تفاصيل التحديثات من الإعدادات ← التحديثات.`,
       null,
       "#92ff8f",
-      "#000",
-      5000,
+      9000,
       "عرض التحديثات",
       "./updates.html",
     );
@@ -128,24 +127,10 @@ const StorageAdapter = {
 
 const DEFAULT_GROUPS = [
   {
-    id: "ismail",
-    name: "مجموعة إسماعيل",
-    password: "1234",
+    id: "islam",
+    name: "مجموعة إسلام",
+    password: "7574",
     description: "مجموعة العمال الأساسية",
-    active: true,
-  },
-  {
-    id: "hussein",
-    name: "مجموعة حسين",
-    password: "5678",
-    description: "مجموعة عمال حسين",
-    active: true,
-  },
-  {
-    id: "ahmed",
-    name: "مجموعة أحمد",
-    password: "9012",
-    description: "مجموعة عمال أحمد",
     active: true,
   },
 ];
@@ -277,10 +262,10 @@ const ACTIVE_GROUP = getActiveGroup();
 // =========================================================
 
 const DEFAULT_WORKERS = [
-  // ["أحمد محمد", 350, "نجار", "01065683544", "صنايعي كويس"],
-  // ["محمد علي", 400, "مساعد", "01154843442", "مساعد مجتهد"],
-  // ["حسن السيد", 350, "حداد", "01248418449", "صنايعي بضين"],
-  // ["علي محمود", 300, "حداد", "01048794492", "صنايعي بيلعب طول اليوم"],
+  ["أحمد محمد", 350, "نجار", "01065683544", "صنايعي كويس"],
+  ["محمد علي", 400, "مساعد", "01154843442", "مساعد مجتهد"],
+  ["حسن السيد", 350, "حداد", "01248418449", "صنايعي بضين"],
+  ["علي محمود", 300, "حداد", "01048794492", "صنايعي بيلعب طول اليوم"],
 ];
 
 const StateRepository = {
@@ -330,6 +315,7 @@ function createInitialState() {
     currency: "EGP",
     attendance: {},
     transactions: {},
+    workers: GROUP_ID == "islam" ? workers : [],
   });
 }
 
@@ -509,7 +495,6 @@ function toast(
   message,
   bad = false,
   bgColor = null,
-  color = null,
   time = 2200,
   actionText = null,
   actionUrl = null,
@@ -518,30 +503,23 @@ function toast(
   el.className = "toast";
 
   if (bgColor) el.style.backgroundColor = bgColor;
-  if (color) el.style.color = color;
 
   // محتوى الرسالة
-  const content = document.createElement("div");
-  content.className = "toast-content";
+  el.innerHTML = `
+    <div class="toast-content" style="text-align: center;">
+      ${bad == null ? "" : bad ? "×" : "✓"} ${message}
+      ${actionText && actionUrl ? `<a href="${actionUrl}" target="_blank" class="toast-action">${actionText}</a>` : ""}
+    </div>
+    <div class="toast-progress">
+      <span></span>
+    </div>
+  `;
 
-  const icon = bad == null ? "" : bad ? "× " : "✓ ";
-  const messageEl = document.createElement("span");
-  messageEl.textContent = `${icon}${message}`;
-  content.append(messageEl);
-
-  // زر الإجراء / الرابط
-  if (actionText && actionUrl) {
-    const link = document.createElement("a");
-
-    link.href = actionUrl;
-    link.textContent = actionText;
-    link.className = "toast-action";
-
-    content.append(link);
-  }
-
-  el.append(content);
   $("#toast")?.append(el);
+
+  const progress = el.querySelector(".toast-progress span");
+  if (progress) progress.style.animationDuration = `${time}ms`;
+
   setTimeout(() => el.remove(), time || 2200);
 }
 
@@ -625,23 +603,33 @@ function setupTheme() {
 //   setupTheme();
 // } catch {}
 
-// Register Service Worker with Auto-Update Check & Reload
+// =========================================================
+// Service Worker
+// Auto Update + Automatic Reload
+// =========================================================
+
 if ("serviceWorker" in navigator) {
   let refreshing = false;
+
+  // عندما يصبح Service Worker الجديد هو المتحكم في الصفحة
   navigator.serviceWorker.addEventListener("controllerchange", () => {
-    if (!refreshing) {
-      refreshing = true;
-      window.location.reload();
-    }
+    if (refreshing) return;
+
+    refreshing = true;
+    window.location.reload();
   });
 
-  window.addEventListener("load", () => {
-    navigator.serviceWorker
-      .register("./sw.js")
-      .then((reg) => {
-        reg.update();
-      })
-      .catch(() => {});
+  window.addEventListener("load", async () => {
+    try {
+      const registration = await navigator.serviceWorker.register("./sw.js", {
+        updateViaCache: "none",
+      });
+
+      // فحص وجود نسخة جديدة
+      await registration.update();
+    } catch (error) {
+      console.error("Service Worker registration failed:", error);
+    }
   });
 }
 
@@ -679,7 +667,7 @@ function setupInstall() {
     deferredPwaPrompt.prompt();
     const { outcome } = await deferredPwaPrompt.userChoice;
     if (outcome === "accepted") {
-      toast("تمت إضافة التطبيق لشاشتك بنجاح", false, "#92ff8f", "#000");
+      toast("تمت إضافة التطبيق لشاشتك بنجاح", false, "#92ff8f");
     }
     deferredPwaPrompt = null;
     installButton.hidden = true;
@@ -728,12 +716,19 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => layoutPage.classList.add("hidden"), 250);
   }
 
-  let welcomeMessageInner = document.getElementById("welcomeMessageInner");
+  const welcomeMessageInner = document.getElementById("welcomeMessageInner");
+
   if (welcomeMessageInner) {
-    let nameActiveGroup = getActiveGroup().name.replace(/مجموعة /, "");
-    welcomeMessageInner.innerHTML = escapeHtml(
-      `صباح الخير، ${nameActiveGroup} 👋`,
-    );
+    const activeGroup = getActiveGroup();
+
+    if (activeGroup) {
+      const nameActiveGroup = activeGroup.name.replace(/مجموعة /, "");
+      const hour = new Date().getHours();
+      const greeting = hour >= 1 && hour < 12 ? "صباح الخير" : "مساء الخير";
+      welcomeMessageInner.innerHTML = escapeHtml(
+        `${greeting}، ${nameActiveGroup} 👋`,
+      );
+    }
   }
 });
 

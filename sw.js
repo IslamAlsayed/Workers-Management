@@ -28,9 +28,9 @@ const ASSETS = [
   "./manifest.json",
 ];
 
-// ================================
+// =========================================================
 // Install
-// ================================
+// =========================================================
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -41,16 +41,16 @@ self.addEventListener("install", (event) => {
   );
 });
 
-// ================================
+// =========================================================
 // Activate
-// ================================
+// =========================================================
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches
       .keys()
-      .then((keys) =>
-        Promise.all(
+      .then((keys) => {
+        return Promise.all(
           keys.map((key) => {
             if (key !== CACHE_NAME) {
               return caches.delete(key);
@@ -58,41 +58,46 @@ self.addEventListener("activate", (event) => {
 
             return null;
           }),
-        ),
-      )
+        );
+      })
       .then(() => self.clients.claim()),
   );
 });
 
-// ================================
+// =========================================================
 // Fetch
-// ================================
+// Network First
+// =========================================================
 
 self.addEventListener("fetch", (event) => {
   const request = event.request;
 
+  // GET فقط
   if (request.method !== "GET") return;
 
   const url = new URL(request.url);
-  if (url.protocol !== "http:" && url.protocol !== "https:") return;
+
+  // تجاهل أي scheme غير HTTP/HTTPS
+  if (url.protocol !== "http:" && url.protocol !== "https:") {
+    return;
+  }
 
   event.respondWith(
     fetch(request)
       .then((networkResponse) => {
+        // حفظ الاستجابة الناجحة في الـCache
         if (networkResponse && networkResponse.status === 200) {
           const responseToCache = networkResponse.clone();
 
           caches
             .open(CACHE_NAME)
-            .then((cache) => cache.put(request, responseToCache))
-            .catch(() => {
-              // لا يمكن حفظ الاستجابة في ذاكرة التخزين المؤقت
-              toast(
-                "لا يمكن حفظ الاستجابة في ذاكرة التخزين المؤقت",
-                true,
-                "#ff8e8e",
-                "#000",
-              );
+            .then((cache) => {
+              return cache.put(request, responseToCache);
+            })
+            .catch((error) => {
+              // لا نستخدم toast هنا لأن Service Worker
+              // لا يمتلك DOM.
+              console.warn("Failed to cache response:", error);
             });
         }
 
@@ -100,11 +105,16 @@ self.addEventListener("fetch", (event) => {
       })
 
       .catch(() => {
-        // الإنترنت غير متوفر
-        return caches.match(request).then((cachedResponse) => {
-          if (cachedResponse) return cachedResponse;
+        // ===================================================
+        // Offline
+        // ===================================================
 
-          // لو المستخدم طلب صفحة HTML
+        return caches.match(request).then((cachedResponse) => {
+          if (cachedResponse) {
+            return cachedResponse;
+          }
+
+          // لو طلب HTML ولم نجد الصفحة في الـCache
           if (request.headers.get("accept")?.includes("text/html")) {
             return caches.match("./index.html");
           }

@@ -784,11 +784,41 @@ body.dark {
   padding: 12px 15px;
   border-radius: 14px;
   background: var(--s);
+  color: var(--dark-bg);
   /* border: 1px solid var(--b); */
   box-shadow: 0 12px 35px #638cec20;
   box-shadow: 0 5px 13px #638cec20;
   font-size: 12px;
   animation: in 0.2s;
+}
+.toast {
+  position: relative;
+  overflow: hidden;
+}
+.toast-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+}
+.toast-progress span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #b80db0;
+  background: #00e716;
+  transform-origin: right;
+  animation: toastProgress linear forwards;
+}
+@keyframes toastProgress {
+  from {
+    transform: scaleX(1);
+  }
+
+  to {
+    transform: scaleX(0);
+  }
 }
 .overlay {
   position: fixed;
@@ -1038,7 +1068,7 @@ body.dark {
 }
 
 @media (min-width: 500px) {
-  .mini-action {
+  .mini-action.special {
     font-size: 16px;
     padding: 10px 25px;
   }

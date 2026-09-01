@@ -191,7 +191,7 @@ function setupSettlementUI(worker) {
 
       settleWorkerAccount(worker.id, amount, note);
       closeModal("settlementModal");
-      toast("تمت تصفية الحساب بنجاح", false, "#92ff8f", "#000");
+      toast("تمت تصفية الحساب بنجاح", false, "#92ff8f");
       renderWorker(worker);
     };
   }
