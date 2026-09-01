@@ -69,7 +69,7 @@ function showUpdateNotification() {
     toast(
       `🚀 تم تحديث التطبيق إلى الإصدار ${APP_VERSION} — يمكنك معرفة تفاصيل التحديثات من الإعدادات ← التحديثات.`,
       null,
-      "#92ff8f",
+      UPDATE_NOTIFICATION_COLOR,
       9000,
       "عرض التحديثات",
       "./updates.html",
@@ -523,22 +523,6 @@ function toast(
   setTimeout(() => el.remove(), time || 2200);
 }
 
-function toast2(
-  message,
-  bad = false,
-  bgColor = null,
-  color = null,
-  time = 2200,
-) {
-  const el = document.createElement("div");
-  el.className = "toast";
-  if (bgColor) el.style.backgroundColor = bgColor;
-  if (color) el.style.color = color;
-  el.textContent = `${bad == null ? "" : bad ? "×" : "✓"} ${message}`;
-  $("#toast")?.append(el);
-  setTimeout(() => el.remove(), time || 2200);
-}
-
 function pageLinks() {
   $$("[data-page]").forEach((x) =>
     x.addEventListener("click", () => (location.href = x.dataset.page)),
@@ -667,7 +651,7 @@ function setupInstall() {
     deferredPwaPrompt.prompt();
     const { outcome } = await deferredPwaPrompt.userChoice;
     if (outcome === "accepted") {
-      toast("تمت إضافة التطبيق لشاشتك بنجاح", false, "#92ff8f");
+      toast("تمت إضافة التطبيق لشاشتك بنجاح", false, UPDATE_NOTIFICATION_COLOR);
     }
     deferredPwaPrompt = null;
     installButton.hidden = true;

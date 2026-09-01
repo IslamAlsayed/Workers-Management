@@ -19,7 +19,7 @@ $("#clearDataConfirm").onclick = () => {
   StateRepository.save(freshState, GROUP_ID);
 
   closeModal("clearDataModal");
-  toast("تم مسح بيانات المجموعة", false, "#92ff8f");
+  toast("تم مسح بيانات المجموعة", false, UPDATE_NOTIFICATION_COLOR);
 };
 
 $("#cancelDataModal").onclick = () => {
@@ -80,7 +80,7 @@ $("#saveCurrency")?.addEventListener("click", () => {
   save();
   closeModal("currencyModal");
   updateCurrencyUI();
-  toast("تم تغيير العملة", null, "#92ff8f");
+  toast("تم تغيير العملة", null, UPDATE_NOTIFICATION_COLOR);
 });
 
 bindModal("currencyModal");
@@ -111,7 +111,7 @@ function exportJsonData() {
   link.click();
   document.body.removeChild(link);
 
-  toast("تم تصدير النسخة الاحتياطية بنجاح", null, "#92ff8f");
+  toast("تم تصدير النسخة الاحتياطية بنجاح", null, UPDATE_NOTIFICATION_COLOR);
 }
 
 // Import JSON Backup
@@ -134,7 +134,11 @@ importFileInput?.addEventListener("change", (e) => {
         typeof importedData !== "object" ||
         !Array.isArray(importedData.workers)
       ) {
-        return toast("ملف النسخة الاحتياطية غير صالح", true, "#ff8e8e");
+        return toast(
+          "ملف النسخة الاحتياطية غير صالح",
+          true,
+          ERROR_NOTIFICATION_COLOR,
+        );
       }
 
       StateRepository.save(
@@ -146,12 +150,16 @@ importFileInput?.addEventListener("change", (e) => {
         GROUP_ID,
       );
 
-      toast("تمت استعادة البيانات بنجاح! جاري التحديث...", false, "#92ff8f");
+      toast(
+        "تمت استعادة البيانات بنجاح! جاري التحديث...",
+        false,
+        UPDATE_NOTIFICATION_COLOR,
+      );
       setTimeout(() => {
         location.reload();
       }, 1000);
     } catch {
-      toast("تعذر قراءة ملف النسخة الاحتياطية", true, "#ff8e8e");
+      toast("تعذر قراءة ملف النسخة الاحتياطية", true, ERROR_NOTIFICATION_COLOR);
     }
   };
   reader.readAsText(file);

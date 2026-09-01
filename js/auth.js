@@ -8,6 +8,10 @@ const LOGIN_MESSAGE_KEY = "workers-login-message";
 const isLoggedIn = sessionStorage.getItem("isLoggedIn", "false");
 const isLoggedInMessage = sessionStorage.getItem("isLoggedInMessage", "true");
 
+// const UPDATE_NOTIFICATION_COLOR = UPDATE_NOTIFICATION_COLOR;
+const UPDATE_NOTIFICATION_COLOR = "#383838";
+const ERROR_NOTIFICATION_COLOR = "#ff8e8e";
+
 function getAuth() {
   try {
     return JSON.parse(sessionStorage.getItem(AUTH_KEY) || "null");
@@ -178,7 +182,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const result = login(groupId, groupPassword);
       if (!result.ok) {
-        toast(result.message, true, "#ff8e8e");
+        toast(result.message, true, ERROR_NOTIFICATION_COLOR);
         return;
       }
 
@@ -256,13 +260,21 @@ document.addEventListener("DOMContentLoaded", () => {
         registerBtn.disabled = true;
         registerBtn.textContent = "جاري الإنشاء...";
 
-        toast("تم إنشاء المجموعة وتسجيل الدخول بنجاح! 🎉", false, "#92ff8f");
+        toast(
+          "تم إنشاء المجموعة وتسجيل الدخول بنجاح! 🎉",
+          false,
+          UPDATE_NOTIFICATION_COLOR,
+        );
 
         setTimeout(() => {
           window.location.href = "index.html";
         }, 600);
       } catch (err) {
-        toast(err.message || "حدث خطأ أثناء إنشاء المجموعة", true, "#ff8e8e");
+        toast(
+          err.message || "حدث خطأ أثناء إنشاء المجموعة",
+          true,
+          ERROR_NOTIFICATION_COLOR,
+        );
       }
     });
 
@@ -314,7 +326,7 @@ function setupCredentialsForm() {
       password: newPassword,
     });
 
-    toast("تم تغيير البيانات بنجاح", false, "#92ff8f");
+    toast("تم تغيير البيانات بنجاح", false, UPDATE_NOTIFICATION_COLOR);
     password.value = newPassword;
   });
 }

@@ -129,7 +129,7 @@
             ),
                 amount = Number(document.getElementById("txAmount").value),
                 type = document.getElementById("txType").value;
-            if (!w || amount <= 0) return toast("أدخل مبلغًا صحيحًا", true, "#ff8e8e");
+            if (!w || amount <= 0) return toast("أدخل مبلغًا صحيحًا", true, ERROR_NOTIFICATION_COLOR);
 
             const date = today();
             S.transactions ||= {};
@@ -141,7 +141,7 @@
             closeModal("transactionModal");
             e.target.reset();
             location.reload();
-            toast("تم الحفظ", null, "#92ff8f");
+            toast("تم الحفظ", null, UPDATE_NOTIFICATION_COLOR);
         };
     </script>
 </body>

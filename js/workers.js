@@ -130,7 +130,7 @@ list.onclick = (e) => {
     );
 
     if (!worker) {
-      toast("العامل غير موجود", true, "#ff8e8e");
+      toast("العامل غير موجود", true, ERROR_NOTIFICATION_COLOR);
       return;
     }
 
@@ -143,7 +143,7 @@ list.onclick = (e) => {
     );
 
     if (!worker) {
-      toast("العامل غير موجود", true, "#ff8e8e");
+      toast("العامل غير موجود", true, ERROR_NOTIFICATION_COLOR);
       return;
     }
 
@@ -185,7 +185,7 @@ $("#workerForm").onsubmit = (e) => {
     const worker = S.workers.find((w) => String(w.id) === String(editingId));
 
     if (!worker) {
-      toast("العامل غير موجود", true, "#ff8e8e");
+      toast("العامل غير موجود", true, ERROR_NOTIFICATION_COLOR);
       return;
     }
 
@@ -219,7 +219,7 @@ $("#workerForm").onsubmit = (e) => {
   toast(
     editingId ? "تم تعديل بيانات العامل" : "تمت إضافة العامل بنجاح",
     false,
-    "#92ff8f",
+    UPDATE_NOTIFICATION_COLOR,
   );
 };
 
@@ -231,7 +231,7 @@ $("#deleteConfirm").onclick = () => {
   const index = S.workers.findIndex((w) => String(w.id) === String(deleteId));
 
   if (index < 0) {
-    toast("العامل غير موجود", true, "#ff8e8e");
+    toast("العامل غير موجود", true, ERROR_NOTIFICATION_COLOR);
     return;
   }
 
@@ -256,7 +256,7 @@ $("#deleteConfirm").onclick = () => {
   save();
   closeModal("deleteModal");
   renderWorkers();
-  toast("تم حذف العامل وبياناته بالكامل", false, "#92ff8f");
+  toast("تم حذف العامل وبياناته بالكامل", false, UPDATE_NOTIFICATION_COLOR);
 };
 
 // Initial render

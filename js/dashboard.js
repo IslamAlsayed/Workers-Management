@@ -1,5 +1,5 @@
 if (isAuthenticated() && isLoggedIn && isLoggedInMessage === "false") {
-  toast("تم تسجيل الدخول بنجاح", false);
+  toast("تم تسجيل الدخول بنجاح", false, UPDATE_NOTIFICATION_COLOR);
   sessionStorage.removeItem("isLoggedInMessage");
 }
 

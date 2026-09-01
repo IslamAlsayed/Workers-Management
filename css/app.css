@@ -166,6 +166,16 @@ body.dark {
   margin-top: 6px;
   line-height: 1.6;
 }
+@media (max-width: 500px) {
+  .welcome h1,
+  .heading h1 {
+    font-size: 16px;
+  }
+  .welcome p,
+  .heading p {
+    font-size: 10px;
+  }
+}
 .welcome time {
   background: var(--s);
   border: 1px solid var(--b);
@@ -784,13 +794,22 @@ body.dark {
   padding: 12px 15px;
   border-radius: 14px;
   background: var(--s);
-  color: var(--dark-bg);
+  color: #283654;
   /* border: 1px solid var(--b); */
   box-shadow: 0 12px 35px #638cec20;
   box-shadow: 0 5px 13px #638cec20;
   font-size: 12px;
   animation: in 0.2s;
 }
+body.dark {
+  .toast {
+    color: #ffffff;
+  }
+}
+.toast {
+  color: var(--dark-bg);
+}
+
 .toast {
   position: relative;
   overflow: hidden;
@@ -808,6 +827,7 @@ body.dark {
   height: 100%;
   background: #b80db0;
   background: #00e716;
+  background: #555855;
   transform-origin: right;
   animation: toastProgress linear forwards;
 }

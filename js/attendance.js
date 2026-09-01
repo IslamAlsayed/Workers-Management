@@ -56,7 +56,11 @@ list.addEventListener("change", (e) => {
   const next = nextAttendance(attendanceValue(input.dataset.att, date));
   setAttendance(input.dataset.att, next, date);
   render();
-  toast(next ? "تم تسجيل الحضور" : "تم تسجيل الغياب", null, "#92ff8f");
+  toast(
+    next ? "تم تسجيل الحضور" : "تم تسجيل الغياب",
+    null,
+    UPDATE_NOTIFICATION_COLOR,
+  );
 });
 
 function openTransaction(workerId, type) {
@@ -78,7 +82,7 @@ $("#transactionForm").onsubmit = (e) => {
   const amount = Number($("#txAmount").value);
 
   if (!w || !Number.isFinite(amount) || amount <= 0) {
-    return toast("أدخل مبلغًا صحيحًا", true, "#ff8e8e");
+    return toast("أدخل مبلغًا صحيحًا", true, ERROR_NOTIFICATION_COLOR);
   }
 
   const type = $("#txType").value;
@@ -105,7 +109,7 @@ $("#transactionForm").onsubmit = (e) => {
   toast(
     type === "expense" ? "تم تسجيل المصروف" : "تم تسجيل الإضافي",
     null,
-    "#92ff8f",
+    UPDATE_NOTIFICATION_COLOR,
   );
 };
 
