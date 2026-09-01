@@ -53,8 +53,8 @@ function login(groupId, password) {
 function logout() {
   sessionStorage.removeItem(AUTH_KEY);
   sessionStorage.setItem(LOGIN_MESSAGE_KEY, "true");
-  sessionStorage.getItem("isLoggedIn");
-  sessionStorage.getItem("isLoggedInMessage");
+  sessionStorage.setItem("isLoggedIn", "false");
+  sessionStorage.setItem("isLoggedInMessage", "true");
   window.location.href = "login.html";
 }
 
@@ -86,8 +86,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // Element references
   const tabLogin = document.getElementById("tabLogin");
   const tabRegister = document.getElementById("tabRegister");
+  const tabFeatures = document.getElementById("tabFeatures");
   const loginFormContainer = document.getElementById("loginFormContainer");
-  const registerFormContainer = document.getElementById("registerFormContainer");
+  const registerFormContainer = document.getElementById(
+    "registerFormContainer",
+  );
   const authSubtitle = document.getElementById("authSubtitle");
 
   const username = document.getElementById("username");
@@ -97,25 +100,33 @@ document.addEventListener("DOMContentLoaded", () => {
   const regGroupId = document.getElementById("regGroupId");
   const regPassword = document.getElementById("regPassword");
   const regDescription = document.getElementById("regDescription");
+  const regCurrency = document.getElementById("regCurrency");
 
   // Tab switching
-  if (tabLogin && tabRegister) {
+  if (tabLogin && tabRegister && tabFeatures) {
     tabLogin.addEventListener("click", () => {
       tabLogin.classList.add("active");
       tabRegister.classList.remove("active");
+      tabFeatures.classList.remove("active");
       loginFormContainer.style.display = "flex";
       registerFormContainer.style.display = "none";
-      if (authSubtitle) authSubtitle.textContent = "سجل الدخول لإدارة مجموعة العمال";
+      if (authSubtitle)
+        authSubtitle.textContent = "سجل الدخول لإدارة مجموعة العمال";
       username?.focus();
     });
 
     tabRegister.addEventListener("click", () => {
       tabRegister.classList.add("active");
       tabLogin.classList.remove("active");
+      tabFeatures.classList.remove("active");
       registerFormContainer.style.display = "flex";
       loginFormContainer.style.display = "none";
-      if (authSubtitle) authSubtitle.textContent = "أنشئ مجموعة جديدة لإدارة عمالك";
+      if (authSubtitle)
+        authSubtitle.textContent = "أنشئ مجموعة جديدة لإدارة عمالك";
       regGroupName?.focus();
+    });
+    tabFeatures.addEventListener("click", () => {
+      window.location.href = "./about.html";
     });
   }
 
@@ -149,7 +160,8 @@ document.addEventListener("DOMContentLoaded", () => {
         .replace(/[^\w\u0621-\u064A-]+/g, "")
         .slice(0, 20);
 
-      regGroupId.value = suggestedId || `group-${Date.now().toString().slice(-4)}`;
+      regGroupId.value =
+        suggestedId || `group-${Date.now().toString().slice(-4)}`;
     });
   }
 
@@ -193,6 +205,7 @@ document.addEventListener("DOMContentLoaded", () => {
       let groupId = regGroupId?.value.trim().toLowerCase();
       const groupPassword = regPassword?.value.trim();
       const description = regDescription?.value.trim();
+      const currency = regCurrency?.value.trim();
 
       if (!groupName) {
         toast("من فضلك أدخل اسم المجموعة", true);
@@ -214,18 +227,21 @@ document.addEventListener("DOMContentLoaded", () => {
         // Create new group
         const newGroup = GroupRepository.create({
           id: groupId,
+          username: groupId,
           name: groupName,
           password: groupPassword,
           description: description,
+          currency: currency,
         });
 
         // Initialize state for the new group
         const initialState = {
           groupId: newGroup.id,
-          theme: localStorage.getItem("workers-phase1-theme") || "light",
+          theme: localStorage.getItem(APP_KEY + "-theme") || "light",
           workers: [],
           attendance: {},
           transactions: {},
+          currency: currency,
           attendanceDate: new Date().toISOString().slice(0, 10),
         };
         StateRepository.save(initialState, newGroup.id);
@@ -240,17 +256,33 @@ document.addEventListener("DOMContentLoaded", () => {
         registerBtn.disabled = true;
         registerBtn.textContent = "جاري الإنشاء...";
 
-        toast("تم إنشاء المجموعة وتسجيل الدخول بنجاح! 🎉", false, "#92ff8f", "#000");
+        toast(
+          "تم إنشاء المجموعة وتسجيل الدخول بنجاح! 🎉",
+          false,
+          "#92ff8f",
+          "#000",
+        );
 
         setTimeout(() => {
           window.location.href = "index.html";
         }, 600);
       } catch (err) {
-        toast(err.message || "حدث خطأ أثناء إنشاء المجموعة", true, "#ff8e8e", "#000");
+        toast(
+          err.message || "حدث خطأ أثناء إنشاء المجموعة",
+          true,
+          "#ff8e8e",
+          "#000",
+        );
       }
     });
 
-    [regGroupName, regGroupId, regPassword, regDescription].forEach((input) => {
+    [
+      regGroupName,
+      regGroupId,
+      regPassword,
+      regDescription,
+      regCurrency,
+    ].forEach((input) => {
       input?.addEventListener("keydown", (e) => {
         if (e.key === "Enter") registerBtn.click();
       });
@@ -261,7 +293,6 @@ document.addEventListener("DOMContentLoaded", () => {
 // =========================================================
 // Credentials update (Settings page)
 // =========================================================
-
 function setupCredentialsForm() {
   const form = document.getElementById("adminForm");
   if (!form || !isAuthenticated()) return;
@@ -293,8 +324,8 @@ function setupCredentialsForm() {
       password: newPassword,
     });
 
-    toast("تم تغيير كلمة المرور بنجاح", false, "#92ff8f", "#000");
-    password.value = "";
+    toast("تم تغيير البيانات بنجاح", false, "#92ff8f", "#000");
+    password.value = newPassword;
   });
 }
 

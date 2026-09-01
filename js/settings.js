@@ -9,12 +9,15 @@ $("#clearData").onclick = () => {
 
 bindModal("clearDataModal");
 
+// مسح بيانات المجموعة
 $("#clearDataConfirm").onclick = () => {
   if (!GROUP_ID || !S) {
     return toast("يجب تسجيل الدخول أولاً", true);
   }
-  const freshState = createInitialState();
+
+  const freshState = createEmptyState();
   StateRepository.save(freshState, GROUP_ID);
+
   closeModal("clearDataModal");
   toast("تم مسح بيانات المجموعة", false, "#92ff8f", "#000");
 };
@@ -23,8 +26,79 @@ $("#cancelDataModal").onclick = () => {
   closeModal("clearDataModal");
 };
 
+const currencySetting = $("#currencySetting");
+const currencyModal = $("#currencyModal");
+const currencySelect = $("#currencySelect");
+const currencyText = $("#currencyText");
+
+function currencyName(currency) {
+  return currency === "SAR" ? "ريال سعودي" : "جنيه مصري";
+}
+
+function updateCurrencyUI() {
+  const currency = S?.currency || "EGP";
+
+  if (currencyText) {
+    currencyText.textContent = currencyName(currency);
+  }
+
+  if (currencySelect) {
+    currencySelect.value = currency;
+  }
+}
+
+currencySetting?.addEventListener("click", () => {
+  currencySelect.value = S?.currency || "EGP";
+  openModal("currencyModal");
+});
+
+// التأكد من وجود Group فعال
+function ensureActiveGroup() {
+  if (!S || !S.groupId) {
+    toast("يجب تسجيل الدخول أولاً", true);
+
+    report.innerHTML = `
+      <div class="card" style="text-align:center;padding:30px;margin-top:20px">🔐<br>
+        <small>يجب تسجيل الدخول أولاً</small>
+      </div>`;
+
+    return false;
+  }
+
+  return true;
+}
+
+$("#saveCurrency")?.addEventListener("click", () => {
+  if (!ensureActiveGroup()) return;
+
+  const currency = currencySelect.value;
+
+  if (!["EGP", "SAR"].includes(currency)) {
+    return toast("عملة غير صالحة", true);
+  }
+  S.currency = currency;
+  save();
+  closeModal("currencyModal");
+  updateCurrencyUI();
+  toast("تم تغيير العملة", null, "#92ff8f", "#000");
+});
+
+bindModal("currencyModal");
+updateCurrencyUI();
+
 // Export JSON Backup
-$("#exportBackup")?.addEventListener("click", () => {
+$("#exportBackup")?.addEventListener("click", exportJsonData);
+
+// Export JSON Backup Before Clear
+$("#backupBeforeClear")?.addEventListener("click", () => {
+  exportJsonData();
+  setTimeout(() => {
+    document.getElementById("backupBeforeClearWarningBox").style.display =
+      "none";
+  }, 3000);
+});
+
+function exportJsonData() {
   if (!GROUP_ID || !S) return toast("يجب تسجيل الدخول أولاً", true);
 
   const dataStr =
@@ -37,8 +111,8 @@ $("#exportBackup")?.addEventListener("click", () => {
   link.click();
   document.body.removeChild(link);
 
-  toast("تم تصدير النسخة الاحتياطية بنجاح");
-});
+  toast("تم تصدير النسخة الاحتياطية بنجاح", null, "#92ff8f", "#000");
+}
 
 // Import JSON Backup
 const importFileInput = $("#importFileInput");
@@ -60,7 +134,7 @@ importFileInput?.addEventListener("change", (e) => {
         typeof importedData !== "object" ||
         !Array.isArray(importedData.workers)
       ) {
-        return toast("ملف النسخة الاحتياطية غير صالح", true);
+        return toast("ملف النسخة الاحتياطية غير صالح", true, "#ff8e8e", "#000");
       }
 
       StateRepository.save(
@@ -82,7 +156,7 @@ importFileInput?.addEventListener("change", (e) => {
         location.reload();
       }, 1000);
     } catch {
-      toast("تعذر قراءة ملف النسخة الاحتياطية", true);
+      toast("تعذر قراءة ملف النسخة الاحتياطية", true, "#ff8e8e", "#000");
     }
   };
   reader.readAsText(file);

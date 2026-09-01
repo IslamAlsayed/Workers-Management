@@ -33,38 +33,37 @@ function renderWorker(worker) {
 
   document.getElementById("workerProfile").innerHTML = `
         <div class="worker-profile-top">
-            <div class="worker-avatar-large">${worker.name.charAt(0)}</div>
+            <div class="worker-avatar-large">${escapeHtml(worker.name.charAt(0))}</div>
             <div>
-                <h1>${worker.name}</h1>
+                <h1>${escapeHtml(worker.name)}</h1>
             </div>
         </div>
         <div class="worker-basic-info">
             <div>
                 <span>اليومية</span>
-                <strong>${money(worker.rate)}</strong>
+                <strong>${escapeHtml(money(worker.rate))}</strong>
             </div>
             <div>
                 <span>تاريخ الإضافة</span>
-                <strong>${formatDate(worker.createdAt)}</strong>
+                <strong>${escapeHtml(formatDate(worker.createdAt))}</strong>
             </div>
         </div>`;
 
-  document.getElementById("workerRate").textContent = money(worker.rate);
-
-  document.getElementById("workerExpenses").textContent = money(
-    getWorkerExpenses(worker.id),
+  document.getElementById("workerRate").textContent = escapeHtml(
+    money(worker.rate),
   );
-
-  document.getElementById("workerOvertime").textContent = money(
-    getWorkerOvertime(worker.id),
+  document.getElementById("workerExpenses").textContent = escapeHtml(
+    money(getWorkerExpenses(worker.id)),
   );
-
-  document.getElementById("workerDue").textContent = money(
-    getWorkerDue(worker.id),
+  document.getElementById("workerOvertime").textContent = escapeHtml(
+    money(getWorkerOvertime(worker.id)),
   );
-
-  document.getElementById("workerNotes").textContent =
-    worker.note || "لا توجد ملاحظات.";
+  document.getElementById("workerDue").textContent = escapeHtml(
+    money(getWorkerDue(worker.id)),
+  );
+  document.getElementById("workerNotes").textContent = escapeHtml(
+    worker.note || "لا توجد ملاحظات.",
+  );
 
   renderAttendance(worker.id);
   renderLedger(worker.id);
@@ -94,7 +93,7 @@ function renderLedger(workerId) {
         type: dayAtt[workerId] === true ? "حضور" : "غياب",
         badgeClass: dayAtt[workerId] === true ? "present" : "absent",
         details: dayAtt[workerId] === true ? "حضور يوم كامل" : "خصم يوم غياب",
-        amount: null
+        amount: null,
       });
     }
   });
@@ -109,7 +108,7 @@ function renderLedger(workerId) {
           type: "مصروف/سلفة",
           badgeClass: "expense",
           details: "سداد سلفة حرة",
-          amount: `- ${money(tx.expense)}`
+          amount: `- ${money(tx.expense)}`,
         });
       }
       if (tx.overtime > 0) {
@@ -118,7 +117,7 @@ function renderLedger(workerId) {
           type: "إضافي",
           badgeClass: "overtime",
           details: "مكافأة أو إضافي",
-          amount: `+ ${money(tx.overtime)}`
+          amount: `+ ${money(tx.overtime)}`,
         });
       }
     }
@@ -132,7 +131,7 @@ function renderLedger(workerId) {
         type: "تصفية حساب",
         badgeClass: "empty",
         details: s.note || "تصفية ماليّة للحساب",
-        amount: `✔ ${money(s.amount)}`
+        amount: `✔ ${money(s.amount)}`,
       });
     }
   });
@@ -157,7 +156,7 @@ function renderLedger(workerId) {
                 <div style="font-size:10px;color:var(--m);margin-top:2px;">${e.details}</div>
               </div>
               <b style="font-size:12px;">${e.amount || ""}</b>
-            </div>`
+            </div>`,
         )
         .join("")}
     </div>`;
@@ -230,26 +229,28 @@ function getWorkerById(id) {
 function getWorkerExpenses(workerId) {
   const worker = getWorkerById(workerId);
   if (!worker) return 0;
-  let total = Number(worker.expense || 0);
-  const transactions = S.transactions || {};
-  Object.values(transactions).forEach((dayTx) => {
-    if (dayTx && dayTx[workerId] && dayTx[workerId].expense) {
-      total += Number(dayTx[workerId].expense || 0);
-    }
-  });
+  let total = 0;
+  // let total = Number(worker.expense || 0);
+  // const transactions = S.transactions || {};
+  // Object.values(transactions).forEach((dayTx) => {
+  //   if (dayTx && dayTx[workerId] && dayTx[workerId].expense) {
+  //     total += Number(dayTx[workerId].expense || 0);
+  //   }
+  // });
   return total;
 }
 
 function getWorkerOvertime(workerId) {
   const worker = getWorkerById(workerId);
   if (!worker) return 0;
-  let total = Number(worker.overtime || 0);
-  const transactions = S.transactions || {};
-  Object.values(transactions).forEach((dayTx) => {
-    if (dayTx && dayTx[workerId] && dayTx[workerId].overtime) {
-      total += Number(dayTx[workerId].overtime || 0);
-    }
-  });
+  let total = 0;
+  // let total = Number(worker.overtime || 0);
+  // const transactions = S.transactions || {};
+  // Object.values(transactions).forEach((dayTx) => {
+  //   if (dayTx && dayTx[workerId] && dayTx[workerId].overtime) {
+  //     total += Number(dayTx[workerId].overtime || 0);
+  //   }
+  // });
   return total;
 }
 

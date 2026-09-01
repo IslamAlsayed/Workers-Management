@@ -7,6 +7,7 @@
     <meta name="theme-color" content="#2563eb" />
     <link rel="manifest" href="./manifest.json" />
     <link rel="stylesheet" href="./css/app.css?v=2.0" />
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
     <title>التقارير</title>
 </head>
 
@@ -29,8 +30,14 @@
                 </div>
                 <div class="report-actions-row" style="display:flex;gap:8px;margin-top:10px;">
                     <button class="primary wide" id="reportBtn">عرض التقرير</button>
-                    <button class="secondary" id="printReportBtn" title="طباعة التقرير" style="white-space:nowrap;">🖨️ طباعة</button>
-                    <button class="secondary" id="exportCsvBtn" title="تصدير Excel" style="white-space:nowrap;">📊 Excel</button>
+                    <!-- <button class="secondary" id="exportPdfBtn" title="طباعة التقرير ك pdf" style="white-space:nowrap;">📄 تصدير PDF</button> -->
+                    <!-- <button class="secondary" id="printReportBtn" title="طباعة التقرير" style="white-space:nowrap;">🖨️ طباعة</button> -->
+                    <!-- <button class="secondary" id="exportCsvBtn" title="تصدير Excel" style="white-space:nowrap;">📊 Excel</button> -->
+
+                    <button class="secondary" id="exportPdfBtn" title="طباعة التقرير ك pdf">📄 PDF</button>
+                    <button class="secondary" id="exportCsvBtn" title="طباعة التقرير">📊 Excel</button>
+                    <button class="secondary" id="printReportBtn" title="تصدير Excel">🖨️ طباعة</button>
+
                 </div>
             </div>
             <!-- Printable Header for PDF/Paper Print -->
@@ -53,6 +60,7 @@
     </div>
     <div id="toast"></div>
     <script src="./js/auth.js?v=2.0"></script>
+    <script src="./js/version.js?v=2.0"></script>
     <script src="./js/common.js?v=2.0"></script>
     <script src="./js/reports.js?v=2.0"></script>
 </body>

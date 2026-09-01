@@ -6,9 +6,9 @@
   padding: 10px 20px 20px;
 }
 .danger-icon {
-  width: 64px;
-  height: 64px;
-  margin: 0 auto 15px;
+  width: 50px;
+  height: 50px;
+  margin: 0 auto 10px;
   display: flex;
   align-items: center;
   justify-content: center;

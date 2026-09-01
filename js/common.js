@@ -9,12 +9,74 @@
  * without changing the page/business logic.
  */
 
-const APP_KEY = "workers-phase1";
+// const APP_KEY = "ommal";
+// const GROUPS_KEY = `${APP_KEY}-groups`;
+// const THEME_KEY = `${APP_KEY}-theme`;
+// const SEEN_VERSION_KEY = `${APP_KEY}-seen-version`;
+
+const APP_KEY = "ommal";
+
+const OLD_APP_KEY = "workers-phase1";
+
 const GROUPS_KEY = `${APP_KEY}-groups`;
 const THEME_KEY = `${APP_KEY}-theme`;
+const SEEN_VERSION_KEY = `${APP_KEY}-seen-version`;
+
+function migrateStorage() {
+  const oldGroupsKey = `${OLD_APP_KEY}-groups`;
+  const oldThemeKey = `${OLD_APP_KEY}-theme`;
+  const newGroupsKey = `${APP_KEY}-groups`;
+  const newThemeKey = `${APP_KEY}-theme`;
+
+  // نقل بيانات المجموعات القديمة
+  if (
+    !localStorage.getItem(newGroupsKey) &&
+    localStorage.getItem(oldGroupsKey)
+  ) {
+    localStorage.setItem(newGroupsKey, localStorage.getItem(oldGroupsKey));
+  }
+
+  // نقل الـ Theme
+  if (!localStorage.getItem(newThemeKey) && localStorage.getItem(oldThemeKey)) {
+    localStorage.setItem(newThemeKey, localStorage.getItem(oldThemeKey));
+  }
+}
+
+migrateStorage();
 
 const $ = (s, root = document) => root.querySelector(s);
 const $$ = (s, root = document) => [...root.querySelectorAll(s)];
+
+const appVersion = document.getElementById("appVersion");
+if (appVersion) {
+  appVersion.textContent = `v${APP_VERSION}`;
+}
+
+function isNewVersion() {
+  const seenVersion = localStorage.getItem(SEEN_VERSION_KEY);
+  return seenVersion !== APP_VERSION;
+}
+
+function markVersionAsSeen() {
+  localStorage.setItem(SEEN_VERSION_KEY, APP_VERSION);
+}
+
+function showUpdateNotification() {
+  if (!isNewVersion()) return;
+  markVersionAsSeen();
+
+  setTimeout(() => {
+    toast(
+      `تم تحديث التطبيق إلى الإصدار ${APP_VERSION} 🚀`,
+      null,
+      "#92ff8f",
+      "#000",
+      5000,
+      "عرض التحديثات",
+      "./updates.html",
+    );
+  }, 800);
+}
 
 function today() {
   return new Date().toISOString().slice(0, 10);
@@ -24,11 +86,17 @@ function id() {
   return crypto.randomUUID?.() || `id-${Date.now()}-${Math.random()}`;
 }
 
-function money(n) {
-  if (Number(n || 0) < 0) {
-    return `<span style="color:red">${Number(n || 0).toLocaleString("ar-EG")} ج</span>`;
-  }
-  return Number(n || 0).toLocaleString("ar-EG") + " ج";
+function money(value) {
+  const amount = Number(value) || 0;
+  const currency = S?.currency || "EGP";
+  const locale = currency === "SAR" ? "ar-SA" : "ar-EG";
+
+  return new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  }).format(amount);
 }
 
 // =========================================================
@@ -123,10 +191,7 @@ const GroupRepository = {
 
     if (index === -1) return null;
 
-    groups[index] = {
-      ...groups[index],
-      ...changes,
-    };
+    groups[index] = { ...groups[index], ...changes };
 
     this.save(groups);
     return groups[index];
@@ -176,16 +241,16 @@ function getActiveGroupId() {
   // Before login there is deliberately NO active group.
   return getAuthenticatedGroupId();
 }
+
 function getActiveGroup() {
   const groupId = getActiveGroupId();
-
   if (!groupId) return null;
-
   return GroupRepository.find(groupId);
 }
 
 function setActiveGroup(groupId) {
   const group = GroupRepository.find(groupId);
+  // const group = GroupRepository.all().find((g) => (g.username || g.id) === enteredUsername);
 
   if (!group || group.active === false) {
     throw new Error("Group not found");
@@ -262,10 +327,31 @@ function createInitialState() {
   return normalize({
     groupId: GROUP_ID,
     theme: localStorage.getItem(THEME_KEY) || "light",
-    workers,
+    currency: "EGP",
     attendance: {},
     transactions: {},
   });
+}
+
+function createEmptyState() {
+  return normalize({
+    groupId: GROUP_ID,
+    theme: S?.theme || "light",
+    currency: "EGP",
+    workers: [],
+    attendance: {},
+    transactions: {},
+    settlements: {},
+  });
+}
+
+function escapeHtml(value = "") {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
 
 function loadState() {
@@ -307,6 +393,7 @@ function normalize(state) {
   return {
     groupId: GROUP_ID,
     theme: state.theme || "light",
+    currency: state.currency === "SAR" ? "SAR" : "EGP",
     workers,
     attendance,
     transactions,
@@ -326,7 +413,7 @@ function settleWorkerAccount(workerId, amount, note = "") {
     amount: Number(amount) || 0,
     settledAt: Date.now(),
     date: today(),
-    note: note || "تصفية وتصفية حساب"
+    note: note || "تصفية وتصفية حساب",
   };
   S.settlements.unshift(entry);
   save();
@@ -418,14 +505,60 @@ function bindModal(id) {
   });
 }
 
-function toast(message, bad = false, bgColor = null, color = null) {
+function toast(
+  message,
+  bad = false,
+  bgColor = null,
+  color = null,
+  time = 2200,
+  actionText = null,
+  actionUrl = null,
+) {
+  const el = document.createElement("div");
+  el.className = "toast";
+
+  if (bgColor) el.style.backgroundColor = bgColor;
+  if (color) el.style.color = color;
+
+  // محتوى الرسالة
+  const content = document.createElement("div");
+  content.className = "toast-content";
+
+  const icon = bad == null ? "" : bad ? "× " : "✓ ";
+  const messageEl = document.createElement("span");
+  messageEl.textContent = `${icon}${message}`;
+  content.append(messageEl);
+
+  // زر الإجراء / الرابط
+  if (actionText && actionUrl) {
+    const link = document.createElement("a");
+
+    link.href = actionUrl;
+    link.textContent = actionText;
+    link.className = "toast-action";
+
+    content.append(link);
+  }
+
+  el.append(content);
+  $("#toast")?.append(el);
+  setTimeout(() => el.remove(), time || 2200);
+}
+
+function toast2(
+  message,
+  bad = false,
+  bgColor = null,
+  color = null,
+  time = 2200,
+) {
   const el = document.createElement("div");
   el.className = "toast";
   if (bgColor) el.style.backgroundColor = bgColor;
   if (color) el.style.color = color;
   el.textContent = `${bad == null ? "" : bad ? "×" : "✓"} ${message}`;
   $("#toast")?.append(el);
-  setTimeout(() => el.remove(), 2200);
+  setTimeout(() => el.remove(), time || 2200);
 }
 
 function pageLinks() {
@@ -488,9 +621,9 @@ function setupTheme() {
 }
 
 // Apply theme immediately on script execution
-try {
-  setupTheme();
-} catch {}
+// try {
+//   setupTheme();
+// } catch {}
 
 // Register Service Worker with Auto-Update Check & Reload
 if ("serviceWorker" in navigator) {
@@ -559,6 +692,7 @@ function setupCommon() {
   pageLinks();
   renderGroupInfo();
   renderGroupSelect();
+  showUpdateNotification();
 }
 
 function renderNav(active) {
@@ -597,7 +731,9 @@ document.addEventListener("DOMContentLoaded", () => {
   let welcomeMessageInner = document.getElementById("welcomeMessageInner");
   if (welcomeMessageInner) {
     let nameActiveGroup = getActiveGroup().name.replace(/مجموعة /, "");
-    welcomeMessageInner.innerHTML = `صباح الخير، ${nameActiveGroup} 👋`;
+    welcomeMessageInner.innerHTML = escapeHtml(
+      `صباح الخير، ${nameActiveGroup} 👋`,
+    );
   }
 });
 
@@ -621,4 +757,9 @@ if (footerTag) {
   fetch("./includes/footer.html")
     .then((result) => result.text())
     .then((code) => (footerTag.innerHTML = code));
+}
+
+if (location.pathname.includes("login.html")) {
+  const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  localStorage.setItem(THEME_KEY, isDarkMode ? "dark" : "light");
 }

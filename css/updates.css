@@ -1,0 +1,45 @@
+.update-card {
+  padding: 18px;
+}
+
+.update-card.active {
+  background: #d0ecd0;
+}
+body.dark {
+  .update-card.active {
+    background: #17332c;
+  }
+}
+
+.update-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.update-head h2 {
+  margin: 5px 0 0;
+  font-size: 18px;
+}
+
+.update-date {
+  display: block;
+  margin-top: 8px;
+  opacity: 0.55;
+}
+
+.update-card ul {
+  margin: 15px 0 0;
+  padding-right: 20px;
+}
+
+.update-card li {
+  margin-bottom: 8px;
+  line-height: 1.7;
+}
+
+.list {
+  gap: 25px;
+  grid-template-columns: repeat(1, 1fr);
+}

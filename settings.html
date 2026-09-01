@@ -59,6 +59,22 @@
                     <div><b>استعادة نسخة احتياطية</b><small>رفع ملف JSON لاستعادة البيانات</small></div>
                     <em>رفع</em>
                 </button>
+                <button class="setting" id="currencySetting">
+                    <span>💰</span>
+                    <div>
+                        <b>العملة</b>
+                        <small>العملة المستخدمة في الحسابات</small>
+                    </div>
+                    <em id="currencyText">جنيه مصري</em>
+                </button>
+                <button class="setting" onclick="location.href='updates.html'">
+                    <span>🚀</span>
+                    <div>
+                        <b>تحديثات التطبيق</b>
+                        <small>تعرف على آخر الإضافات والتحسينات</small>
+                    </div>
+                    <em id="appVersion"></em>
+                </button>
                 <input type="file" id="importFileInput" accept=".json" style="display:none;" />
             </div>
             <section style="margin-block: 40px;">
@@ -68,6 +84,7 @@
                 <form id="adminForm" class="formGrid">
                     <label>
                         اسم المستخدم
+                        <!-- <input id="username" maxlength="80" required autocomplete="username" /> -->
                         <input id="username" maxlength="80" disabled class="disable" />
                     </label>
                     <label>
@@ -90,6 +107,44 @@
         </nav>
     </div>
     <div class="overlay" id="clearDataModal">
+        <div class="sheet confirm-sheet">
+            <div class="handle"></div>
+            <div class="sheetHead">
+                <h2>حذف بيانات المجموعة</h2>
+                <button class="close" data-close-clear>×</button>
+            </div>
+
+            <div class="confirm-content">
+                <div class="danger-icon">🗑️</div>
+                <h3>هل تريد حذف بيانات المجموعة؟</h3>
+                <p>سيتم حذف جميع بيانات المجموعة الحالية <br /> من هذا الجهاز، بما في ذلك:</p>
+                <ul>
+                    <li>العمال</li>
+                    <li>الحضور والغياب</li>
+                    <li>المصاريف</li>
+                    <li>الإضافي</li>
+                    <li>التقارير والمعاملات</li>
+                </ul>
+
+                <div class="backup-box">
+                    <strong>💡 نصيحة قبل الحذف</strong>
+                    <p>
+                        إذا كنت قد تحتاج إلى هذه البيانات مستقبلًا،
+                        يُنصح بتنزيل نسخة احتياطية بصيغة JSON.
+                        يمكنك استعادتها لاحقًا على هذا الجهاز أو جهاز آخر.
+                    </p>
+                    <button type="button" class="secondary wide" id="backupBeforeClear" style="color: #038fff;margin-bottom: 10px;">📥 تنزيل نسخة احتياطية</button>
+                </div>
+                <div class="warning-box" id="backupBeforeClearWarningBox">⚠️ بعد حذف البيانات لن تتمكن من استعادتها إلا إذا كان لديك نسخة احتياطية.</div>
+            </div>
+            <div class="actions confirm-actions">
+                <button type="button" class="secondary" id="cancelDataModal" data-close-clear>إلغاء</button>
+                <button type="button" class="danger" id="clearDataConfirm">🗑️ حذف البيانات نهائيًا</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay" id="clearDataModal2">
         <div class="sheet confirm-sheet">
             <div class="handle"></div>
 
@@ -117,7 +172,31 @@
             </div>
         </div>
     </div>
+    <div class="overlay" id="currencyModal">
+        <div class="sheet currency">
+            <div class="handle"></div>
+            <div class="sheetHead">
+                <h2>اختيار العملة</h2>
+                <button class="close">×</button>
+            </div>
+            <div class="formGrid currency">
+                <label>
+                    العملة
+                    <select id="currencySelect">
+                        <option value="EGP">جنيه مصري</option>
+                        <option value="SAR">ريال سعودي</option>
+                    </select>
+                </label>
+                <div class="actions">
+                    <button class="primary" id="saveCurrency">
+                        حفظ
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div id="toast"></div>
+    <script src="./js/version.js?v=2.0"></script>
     <script src="./js/common.js?v=2.0"></script>
     <script src="./js/auth.js?v=2.0"></script>
     <script src="./js/settings.js?v=2.0"></script>

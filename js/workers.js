@@ -16,8 +16,7 @@ function ensureActiveGroup() {
 function renderWorkers() {
   if (!ensureActiveGroup()) {
     list.innerHTML = `
-      <div class="card" style="text-align:center;padding:30px">
-        🔐<br>
+      <div class="card" style="text-align:center;padding:30px;margin-top:20px">🔐<br>
         <small>يجب تسجيل الدخول أولاً</small>
       </div>`;
     return;
@@ -42,7 +41,7 @@ function renderWorkers() {
               <div class="info">
                 <div class="info-text">
                   <b>
-                    <a href="worker.html?id=${w.id}" style="color:inherit;text-decoration:none;">${w.name || "بدون اسم"}</a>
+                    <a href="worker.html?id=${w.id}" class="link">${w.name || "بدون اسم"}</a>
                     ${w.phone ? `<small> - ${w.phone}</small>` : ""}
                   </b>
                 </div>
@@ -78,7 +77,7 @@ function renderWorkers() {
         )
         .join("")
     : `
-        <div class="card" style="text-align:center;padding:30px">🔎<br>
+        <div class="card" style="text-align:center;padding:30px;margin-top:20px">🔎<br>
           <small>${q ? "لا توجد نتائج مطابقة للبحث" : "لا يوجد عمال في هذه المجموعة"}</small>
         </div>
       `;
@@ -118,8 +117,7 @@ $("#addWorker").onclick = () => {
 // Search
 $("#search").oninput = renderWorkers;
 
-// Edit - Delete
-
+// Edit/Delete Worker
 list.onclick = (e) => {
   if (!ensureActiveGroup()) return;
 
@@ -132,7 +130,7 @@ list.onclick = (e) => {
     );
 
     if (!worker) {
-      toast("العامل غير موجود", true);
+      toast("العامل غير موجود", true, "#ff8e8e", "#000");
       return;
     }
 
@@ -145,7 +143,7 @@ list.onclick = (e) => {
     );
 
     if (!worker) {
-      toast("العامل غير موجود", true);
+      toast("العامل غير موجود", true, "#ff8e8e", "#000");
       return;
     }
 
@@ -171,15 +169,15 @@ $("#workerForm").onsubmit = (e) => {
   const note = $("#workerNote").value.trim();
 
   if (!name) {
-    return toast("اكتب اسم العامل", true, "#ff8e8e", "#000");
+    return toast("اكتب اسم العامل", true);
   }
 
   if (!Number.isFinite(rate) || rate < 0) {
-    return toast("راجع قيمة اليومية", true, "#ff8e8e", "#000");
+    return toast("راجع قيمة اليومية", true);
   }
 
   if (phone && !/^[0-9]{11,15}$/.test(phone)) {
-    return toast("رقم الهاتف غير صحيح", true, "#ff8e8e", "#000");
+    return toast("رقم الهاتف غير صحيح", true);
   }
 
   //  Edit worker exist already
@@ -207,9 +205,6 @@ $("#workerForm").onsubmit = (e) => {
       profession,
       phone,
       note,
-
-      expense: 0,
-      overtime: 0,
     });
   }
 
@@ -237,15 +232,32 @@ $("#deleteConfirm").onclick = () => {
   const index = S.workers.findIndex((w) => String(w.id) === String(deleteId));
 
   if (index < 0) {
-    toast("العامل غير موجود", true);
+    toast("العامل غير موجود", true, "#ff8e8e", "#000");
     return;
   }
 
+  // 1. حذف العامل
   S.workers.splice(index, 1);
+
+  // 2. حذف transactions الخاصة بالعامل من كل التواريخ
+  Object.keys(S.transactions || {}).forEach((date) => {
+    if (!S.transactions[date]) return;
+    delete S.transactions[date][deleteId];
+    if (Object.keys(S.transactions[date]).length === 0) {
+      delete S.transactions[date];
+    }
+  });
+
+  // 3. حذف attendance الخاصة بالعامل من كل التواريخ
+  Object.keys(S.attendance || {}).forEach((date) => {
+    if (!S.attendance[date]) return;
+    delete S.attendance[date][deleteId];
+  });
+
   save();
   closeModal("deleteModal");
   renderWorkers();
-  toast("تم حذف العامل");
+  toast("تم حذف العامل وبياناته بالكامل", false, "#92ff8f", "#000");
 };
 
 // Initial render

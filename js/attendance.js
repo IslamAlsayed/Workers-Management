@@ -1,72 +1,40 @@
-// attendance.js
-
 setupCommon();
-
 renderNav("attendance");
 
 const list = $("#attendanceList");
 
 function render() {
   const date = $("#attendanceDate").value || today();
-
   S.attendanceDate = date;
-
   save();
+  list.innerHTML =
+    S.workers.length > 0
+      ? S.workers
+          .map((w) => {
+            const value = attendanceValue(w.id, date);
 
-  list.innerHTML = S.workers
-    .map((w) => {
-      const value = attendanceValue(w.id, date);
-
-      return `
+            return `
         <article class="attendance">
-          <div class="avatar">
-            ${w.name[0] || "👤"}
-          </div>
-
-          <div class="info">
-            <b>${w.name}</b>
-            <small>${money(w.rate)} / يوم</small>
-          </div>
-
+          <div class="avatar">${w.name[0] || "👤"}</div>
+          <div class="info"><b>${w.name}</b><small>${money(w.rate)} / يوم</small></div>
           <div class="attendance-tools">
-            <button
-              class="mini-action"
-              data-exp="${w.id}"
-            >
-              مصروف
-            </button>
-
-            <button
-              class="mini-action"
-              data-over="${w.id}"
-            >
-              إضافي
-            </button>
+            <button class="mini-action" data-exp="${w.id}" >مصروف</button>
+            <button class="mini-action" data-over="${w.id}">إضافي</button>
           </div>
-
-          <label
-            class="attendance-toggle ${
-              value === true ? "present" : value === false ? "absent" : "empty"
-            }"
-          >
-            <input
-              type="checkbox"
-              data-att="${w.id}"
-              ${value === true ? "checked" : ""}
-            >
-
-            <span>
-              ${value === true ? "حاضر" : value === false ? "غائب" : "غير محدد"}
-            </span>
+          <label class="attendance-toggle ${value === true ? "present" : value === false ? "absent" : "empty"}">
+            <input type="checkbox" data-att="${w.id}" ${value === true ? "checked" : ""}>
+            <span>${value === true ? "حاضر" : value === false ? "غائب" : "غير محدد"}</span>
           </label>
         </article>
       `;
-    })
-    .join("");
+          })
+          .join("")
+      : `<div class="card" style="text-align:center;padding:30px;margin-top:20px;">🔎<br>
+          <small>${"لا يوجد عمال للحضور في هذه المجموعة"}</small>
+        </div>`;
 }
 
 $("#attendanceDate").value = S.attendanceDate || today();
-
 $("#attendanceDate").onchange = render;
 
 list.onclick = (e) => {
@@ -77,41 +45,26 @@ list.onclick = (e) => {
   const exp = e.target.closest("[data-exp]");
   const over = e.target.closest("[data-over]");
 
-  if (exp) {
-    openTransaction(exp.dataset.exp, "expense");
-  }
-
-  if (over) {
-    openTransaction(over.dataset.over, "overtime");
-  }
+  if (exp) openTransaction(exp.dataset.exp, "expense");
+  if (over) openTransaction(over.dataset.over, "overtime");
 };
 
 list.addEventListener("change", (e) => {
   const input = e.target.closest("[data-att]");
-
   if (!input) return;
-
   const date = $("#attendanceDate").value;
-
   const next = nextAttendance(attendanceValue(input.dataset.att, date));
-
   setAttendance(input.dataset.att, next, date);
-
   render();
-
-  toast(next ? "تم تسجيل الحضور" : "تم تسجيل الغياب");
+  toast(next ? "تم تسجيل الحضور" : "تم تسجيل الغياب", null, "#92ff8f", "#000");
 });
 
 function openTransaction(workerId, type) {
   $("#txWorkerId").value = workerId;
-
   $("#txType").value = type;
-
   $("#txTitle").textContent =
     type === "expense" ? "إضافة مصروف" : "إضافة إضافي";
-
   openModal("transactionModal");
-
   $("#txAmount").focus();
 }
 
@@ -121,13 +74,11 @@ $("#transactionForm").onsubmit = (e) => {
   e.preventDefault();
 
   const workerId = $("#txWorkerId").value;
-
   const w = S.workers.find((x) => String(x.id) === String(workerId));
-
   const amount = Number($("#txAmount").value);
 
   if (!w || !Number.isFinite(amount) || amount <= 0) {
-    return toast("أدخل مبلغًا صحيحًا", true);
+    return toast("أدخل مبلغًا صحيحًا", true, "#ff8e8e", "#000");
   }
 
   const type = $("#txType").value;
@@ -138,9 +89,7 @@ $("#transactionForm").onsubmit = (e) => {
   const date = $("#attendanceDate").value || today();
 
   S.transactions ||= {};
-
   S.transactions[date] ||= {};
-
   S.transactions[date][w.id] ||= {
     expense: 0,
     overtime: 0,
@@ -150,14 +99,15 @@ $("#transactionForm").onsubmit = (e) => {
     Number(S.transactions[date][w.id][type] || 0) + amount;
 
   save();
-
   closeModal("transactionModal");
-
   e.target.reset();
-
   render();
-
-  toast(type === "expense" ? "تم تسجيل المصروف" : "تم تسجيل الإضافي");
+  toast(
+    type === "expense" ? "تم تسجيل المصروف" : "تم تسجيل الإضافي",
+    null,
+    "#92ff8f",
+    "#000",
+  );
 };
 
 render();

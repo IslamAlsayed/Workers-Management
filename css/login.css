@@ -10,7 +10,7 @@ body {
 
 #loginView {
   width: calc(100% - 32px);
-  max-width: 440px;
+  max-width: 490px;
 }
 
 .login-card {
@@ -62,7 +62,7 @@ body.dark .auth-tabs {
 .auth-tab {
   flex: 1;
   padding: 10px 12px;
-  font-size: 0.9rem;
+  font-size: 14px;
   font-weight: 600;
   border-radius: 10px;
   background: transparent;
@@ -70,6 +70,12 @@ body.dark .auth-tabs {
   border: none;
   transition: all 0.2s ease;
   text-align: center;
+}
+
+@media (max-width: 500px) {
+  .auth-tab {
+    font-size: 9px;
+  }
 }
 
 .auth-tab.active {
@@ -141,7 +147,8 @@ body.dark input {
   border-color: #475569;
 }
 
-.button, button {
+.button,
+button {
   font-family: inherit;
   font-size: 0.95rem;
   font-weight: 600;
@@ -149,7 +156,9 @@ body.dark input {
   border-radius: 12px;
   padding: 12px 16px;
   cursor: pointer;
-  transition: opacity 0.2s, transform 0.1s;
+  transition:
+    opacity 0.2s,
+    transform 0.1s;
 }
 
 button:active {
