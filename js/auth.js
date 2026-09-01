@@ -160,8 +160,8 @@ document.addEventListener("DOMContentLoaded", () => {
         .replace(/[^\w\u0621-\u064A-]+/g, "")
         .slice(0, 20);
 
-      regGroupId.value =
-        suggestedId || `group-${Date.now().toString().slice(-4)}`;
+      // regGroupId.value =
+      //   suggestedId || `group-${Date.now().toString().slice(-4)}`;
     });
   }
 
