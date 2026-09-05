@@ -71,9 +71,9 @@ function requireAuth() {
   return true;
 }
 
-// =========================================================
+// ==================================
 // Login & Registration Page Logic
-// =========================================================
+// ==================================
 
 document.addEventListener("DOMContentLoaded", () => {
   const loginBtn = document.getElementById("loginBtn");
@@ -292,9 +292,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// =========================================================
+// ==================================
 // Credentials update (Settings page)
-// =========================================================
+// ==================================
 function setupCredentialsForm() {
   const form = document.getElementById("adminForm");
   if (!form || !isAuthenticated()) return;

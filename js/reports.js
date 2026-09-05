@@ -76,10 +76,19 @@ function render() {
 
       Object.entries(transactions).forEach(([date, dayTx]) => {
         if (date < from || date > to) return;
-        const tx = dayTx?.[worker.id];
-        if (!tx) return;
-        expense += Number(tx.expense || 0);
-        overtime += Number(tx.overtime || 0);
+        // const tx = dayTx?.[worker.id];
+        // if (!tx) return;
+        // expense += Number(tx.expense || 0);
+        // overtime += Number(tx.overtime || 0);
+
+        const transactions = dayTx?.[worker.id];
+        if (!Array.isArray(transactions)) return;
+
+        transactions.forEach((tx) => {
+          if (!tx || Number(tx.amount) <= 0) return;
+          if (tx.type === "expense") expense += Number(tx.amount);
+          if (tx.type === "overtime") overtime += Number(tx.amount);
+        });
       });
 
       const wage = days * rate;

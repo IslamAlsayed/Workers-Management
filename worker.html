@@ -13,36 +13,45 @@
     <div id="app">
         <div id="header"></div>
         <main class="worker-page">
-            <!-- Worker Header -->
-            <section class="worker-profile card" id="workerProfile">
+            <!-- Worker Hero -->
+            <section class="worker-hero card" id="workerProfile">
                 <div class="loading">جاري تحميل بيانات العامل...</div>
             </section>
 
-            <!-- Financial Summary -->
+            <!-- Financial Overview -->
             <section class="section">
                 <div class="section-title">
                     <h2>الملخص المالي</h2>
                 </div>
 
-                <div class="stats2">
-                    <div class="stat">
-                        <small>اليومية</small>
-                        <b id="workerRate">0 ج</b>
+                <div class="financial-grid">
+                    <div class="financial-card rate">
+                        <span class="financial-icon">💵</span>
+                        <div>
+                            <small>اليومية</small>
+                            <strong id="workerRate">0 ج</strong>
+                        </div>
                     </div>
-
-                    <div class="stat">
-                        <small>إجمالي المصاريف</small>
-                        <b id="workerExpenses">0 ج</b>
+                    <div class="financial-card expense">
+                        <span class="financial-icon">💸</span>
+                        <div>
+                            <small>المصاريف</small>
+                            <strong id="workerExpenses">0 ج</strong>
+                        </div>
                     </div>
-
-                    <div class="stat">
-                        <small>إجمالي الإضافي</small>
-                        <b id="workerOvertime">0 ج</b>
+                    <div class="financial-card overtime">
+                        <span class="financial-icon">⏱️</span>
+                        <div>
+                            <small>الإضافي</small>
+                            <strong id="workerOvertime">0 ج</strong>
+                        </div>
                     </div>
-
-                    <div class="stat">
-                        <small>المستحق</small>
-                        <b id="workerDue">0 ج</b>
+                    <div class="financial-card due">
+                        <span class="financial-icon">💰</span>
+                        <div>
+                            <small>المستحق</small>
+                            <strong id="workerDue">0 ج</strong>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -50,8 +59,8 @@
             <!-- Attendance -->
             <section class="section card">
                 <div class="section-title">
-                    <h2>الحضور</h2>
-                    <span class="muted">هذا الأسبوع</span>
+                    <h2>📅 الحضور</h2>
+                    <span class="muted">إجمالي السجل</span>
                 </div>
 
                 <div class="attendance-summary" id="attendanceSummary">
@@ -59,41 +68,189 @@
                 </div>
             </section>
 
+            <!-- Financial Activity -->
+            <section class="section card">
+                <div class="section-title activity-header">
+                    <div>
+                        <h2>🧾 الحركة المالية</h2>
+                        <span class="muted">المصاريف والإضافي</span>
+                    </div>
+                    <button class="primary small-btn" id="addWorkerTransactionBtn" type="button">＋ إضافة</button>
+                </div>
+                <div id="workerLedger" class="ledger-list">
+                    <div class="loading">جاري تحميل العمليات...</div>
+                </div>
+            </section>
+
             <!-- Notes -->
             <section class="section card">
                 <div class="section-title">
-                    <h2>ملاحظات</h2>
+                    <h2>📝 ملاحظات</h2>
                 </div>
-
                 <p id="workerNotes" class="worker-notes">لا توجد ملاحظات.</p>
-            </section>
-
-            <!-- Chronological Activity Ledger -->
-            <section class="section card">
-                <div class="section-title" style="display:flex;justify-content:space-between;align-items:center;">
-                    <h2>🧾 سجل الحركة التفصيلي</h2>
-                    <button class="primary" id="settleAccountBtn" style="padding:6px 12px;font-size:12px;">💳 تسوية الحساب</button>
-                </div>
-                <div id="workerLedger" class="ledger-list" style="margin-top:10px;">
-                    <div class="loading">جاري تحميل سجل الحركة...</div>
-                </div>
             </section>
 
             <!-- Actions -->
             <section class="section worker-actions-page">
-                <button class="btn primary" id="editWorkerBtn">
-                    ✎ تعديل بيانات العامل
-                </button>
-
+                <button class="btn primary" id="settleAccountBtn">💳 تسوية الحساب</button>
+                <button class="btn secondary" id="editWorkerBtn">✎ تعديل بيانات العامل</button>
                 <button class="btn secondary" id="backBtn">← العودة للعمال</button>
             </section>
         </main>
     </div>
-
     <div id="toast"></div>
 
+    <!-- Add Transaction Modal -->
+    <!-- Transaction Modal -->
+    <div class="overlay transaction-overlay" id="workerTransactionModal" aria-hidden="true">
+
+        <div class="sheet">
+
+            <div class="handle"></div>
+
+            <div class="sheetHead">
+
+                <div>
+                    <h2 id="workerTxTitle">
+                        تعديل العملية
+                    </h2>
+
+                    <small id="workerTxSubtitle" class="muted"></small>
+                </div>
+
+                <button class="close" id="closeWorkerTransactionModal" type="button">
+                    ×
+                </button>
+
+            </div>
+
+            <form id="workerTransactionForm" class="formGrid">
+
+                <input type="hidden" id="workerTxId" />
+
+                <label>
+                    نوع العملية
+
+                    <select id="workerTxType">
+
+                        <option value="expense">
+                            💸 مصروف / سلفة
+                        </option>
+
+                        <option value="overtime">
+                            ⏱️ إضافي
+                        </option>
+
+                    </select>
+
+                </label>
+
+                <label>
+                    المبلغ
+
+                    <input id="workerTxAmount" required min="0.01" step="0.01" type="number" inputmode="decimal" />
+
+                </label>
+
+                <label>
+                    البيان
+
+                    <input id="workerTxNote" maxlength="120" placeholder="مثال: مواصلات، سلفة..." />
+
+                </label>
+
+                <div class="actions">
+
+                    <button type="submit" class="primary">
+                        حفظ التعديل
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- Add Transaction Modal -->
+    <div class="overlay transaction-add-overlay" id="workerAddTransactionModal" aria-hidden="true">
+
+        <div class="sheet">
+
+            <div class="handle"></div>
+
+            <div class="sheetHead">
+
+                <div>
+                    <h2>إضافة حركة مالية</h2>
+                    <small class="muted">
+                        تسجيل مصروف أو إضافي للعامل
+                    </small>
+                </div>
+
+                <button class="close" id="closeWorkerAddTransactionModal" type="button">
+                    ×
+                </button>
+
+            </div>
+
+            <form id="workerAddTransactionForm" class="formGrid">
+
+                <label>
+                    نوع العملية
+
+                    <select id="workerAddTxType">
+
+                        <option value="expense">
+                            💸 مصروف / سلفة
+                        </option>
+
+                        <option value="overtime">
+                            ⏱️ إضافي
+                        </option>
+
+                    </select>
+
+                </label>
+
+                <label>
+                    المبلغ
+
+                    <input id="workerAddTxAmount" required min="0.01" step="0.01" type="number" inputmode="decimal" />
+
+                </label>
+
+                <label>
+                    البيان
+
+                    <input id="workerAddTxNote" maxlength="120" placeholder="مثال: مواصلات، سلفة..." />
+
+                </label>
+
+                <label>
+                    التاريخ
+
+                    <input id="workerAddTxDate" required type="date" />
+
+                </label>
+
+                <div class="actions">
+
+                    <button type="submit" class="primary">
+                        إضافة العملية
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
     <!-- Settlement Modal -->
-    <div class="overlay" id="settlementModal">
+    <div class="overlay settlement-overlay" id="settlementModal" aria-hidden="true">
         <div class="sheet">
             <div class="handle"></div>
             <div class="sheetHead">
@@ -107,6 +264,74 @@
                     <button type="submit" class="primary">تأكيد التصفية</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Transaction Actions Sheet -->
+    <div class="overlay transaction-actions-overlay" id="transactionActionsModal" aria-hidden="true">
+        <div class="sheet transaction-actions-sheet">
+            <div class="handle"></div>
+            <div class="sheetHead">
+                <div>
+                    <h2>خيارات العملية</h2>
+                    <small id="transactionActionsSubtitle" class="muted">اختر الإجراء المطلوب</small>
+                </div>
+                <button class="close" id="closeTransactionActionsModal" type="button" aria-label="إغلاق">×</button>
+            </div>
+
+            <div class="transaction-actions-list">
+
+                <button type="button" class="transaction-action" id="editTransactionAction">
+                    <span class="transaction-action-icon edit">✏️</span>
+                    <span class="transaction-action-content">
+                        <strong>تعديل العملية</strong>
+                        <small>تغيير المبلغ أو البيان</small>
+                    </span>
+                    <span class="transaction-action-arrow">←</span>
+                </button>
+                <button type="button" class="transaction-action danger" id="deleteTransactionAction">
+                    <span class="transaction-action-icon delete">🗑️</span>
+                    <span class="transaction-action-content">
+                        <strong>حذف العملية</strong>
+                        <small>إزالة العملية من حساب العامل</small>
+                    </span>
+                    <span class="transaction-action-arrow">←</span>
+                </button>
+            </div>
+            <button type="button" class="transaction-cancel-btn" id="cancelTransactionAction">إلغاء</button>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="overlay transaction-delete-overlay" id="transactionDeleteModal" aria-hidden="true">
+        <div class="sheet transaction-delete-sheet">
+
+            <div class="delete-confirm-icon">
+                🗑️
+            </div>
+
+            <h2>حذف العملية؟</h2>
+
+            <p class="delete-confirm-text">
+                هل أنت متأكد من حذف هذه العملية؟
+                <br>
+                لا يمكن التراجع عن هذا الإجراء.
+            </p>
+
+            <div id="deleteTransactionDetails" class="delete-transaction-details"></div>
+
+            <div class="delete-confirm-actions">
+
+                <button type="button" class="secondary" id="cancelDeleteTransaction">
+                    إلغاء
+                </button>
+
+                <button type="button" class="danger-btn" id="confirmDeleteTransaction">
+                    حذف العملية
+                </button>
+
+            </div>
+
         </div>
     </div>
 

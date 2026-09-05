@@ -69,7 +69,7 @@ function showUpdateNotification() {
     toast(
       `🚀 تم تحديث التطبيق إلى الإصدار ${APP_VERSION} — يمكنك معرفة تفاصيل التحديثات من الإعدادات ← التحديثات.`,
       null,
-      UPDATE_NOTIFICATION_COLOR,
+      "#0b7d03",
       9000,
       "عرض التحديثات",
       "./updates.html",
@@ -98,9 +98,9 @@ function money(value) {
   }).format(amount);
 }
 
-// =========================================================
+// ===============
 // Storage adapter
-// =========================================================
+// ===============
 
 const StorageAdapter = {
   get(key) {
@@ -121,9 +121,9 @@ const StorageAdapter = {
   },
 };
 
-// =========================================================
+// ===============
 // Groups repository
-// =========================================================
+// ===============
 
 const DEFAULT_GROUPS = [
   {
@@ -206,9 +206,9 @@ const GroupRepository = {
 // Seed groups only. NEVER selects an active group.
 GroupRepository.ensureDefaults();
 
-// =========================================================
+// ===============
 // Authentication / group context
-// =========================================================
+// ===============
 
 function getAuthenticatedGroupId() {
   try {
@@ -257,9 +257,9 @@ function setActiveGroup(groupId) {
 const GROUP_ID = getActiveGroupId();
 const ACTIVE_GROUP = getActiveGroup();
 
-// =========================================================
+// ===============
 // State repository
-// =========================================================
+// ===============
 
 const DEFAULT_WORKERS = [
   ["أحمد محمد", 350, "نجار", "01065683544", "صنايعي كويس"],
@@ -363,7 +363,72 @@ function normalize(state) {
   }));
 
   const attendance = state.attendance || {};
-  const transactions = state.transactions || {};
+
+  function normalizeTransactions(transactions = {}) {
+    const normalized = {};
+
+    Object.entries(transactions || {}).forEach(([date, dayTransactions]) => {
+      normalized[date] ||= {};
+
+      Object.entries(dayTransactions || {}).forEach(([workerId, value]) => {
+        if (!value) return;
+
+        // الشكل الجديد: Array of transactions
+        if (Array.isArray(value)) {
+          normalized[date][workerId] = value
+            .filter((tx) => tx && Number(tx.amount) > 0)
+            .map((tx) => ({
+              id: tx.id || id(),
+              type: tx.type === "overtime" ? "overtime" : "expense",
+              amount: Number(tx.amount) || 0,
+              note: tx.note || "",
+              createdAt: tx.createdAt || Date.now(),
+              updatedAt: tx.updatedAt || tx.createdAt || Date.now(),
+            }));
+
+          return;
+        }
+
+        // Migration للشكل القديم:
+        // {
+        //   expense: 100,
+        //   overtime: 50
+        // }
+        const migrated = [];
+
+        if (Number(value.expense) > 0) {
+          migrated.push({
+            id: id(),
+            type: "expense",
+            amount: Number(value.expense),
+            note: "عملية قديمة",
+            createdAt: Date.now(),
+            updatedAt: Date.now(),
+            legacy: true,
+          });
+        }
+
+        if (Number(value.overtime) > 0) {
+          migrated.push({
+            id: id(),
+            type: "overtime",
+            amount: Number(value.overtime),
+            note: "عملية قديمة",
+            createdAt: Date.now(),
+            updatedAt: Date.now(),
+            legacy: true,
+          });
+        }
+
+        normalized[date][workerId] = migrated;
+      });
+    });
+
+    return normalized;
+  }
+
+  const transactions = normalizeTransactions(state.transactions || {});
+
   const settlements = state.settlements || [];
   const d = today();
 
@@ -413,9 +478,195 @@ function save() {
   localStorage.setItem(THEME_KEY, S.theme);
 }
 
-// =========================================================
+// ===============
+// Transactions
+// ===============
+
+// ===============
+// Transactions
+// ===============
+
+function getWorkerTransactions(workerId, options = {}) {
+  if (!S) return [];
+
+  const { type = null, from = null, to = null } = options;
+
+  const result = [];
+
+  Object.entries(S.transactions || {}).forEach(([date, workers]) => {
+    if (from && date < from) return;
+    if (to && date > to) return;
+
+    const transactions = workers?.[workerId];
+
+    if (!Array.isArray(transactions)) return;
+
+    transactions.forEach((tx) => {
+      if (!tx || Number(tx.amount) <= 0) return;
+      if (type && tx.type !== type) return;
+
+      result.push({
+        ...tx,
+        date,
+      });
+    });
+  });
+
+  return result.sort((a, b) => {
+    const dateCompare = String(b.date).localeCompare(String(a.date));
+
+    if (dateCompare !== 0) {
+      return dateCompare;
+    }
+
+    return Number(b.createdAt || 0) - Number(a.createdAt || 0);
+  });
+}
+
+function addTransaction(workerId, type, amount, note = "", date = today()) {
+  if (!S || !workerId) return null;
+
+  const value = Number(amount);
+
+  if (!Number.isFinite(value) || value <= 0) {
+    return null;
+  }
+
+  if (!["expense", "overtime"].includes(type)) {
+    return null;
+  }
+
+  S.transactions ||= {};
+  S.transactions[date] ||= {};
+  S.transactions[date][workerId] ||= [];
+
+  // حماية لو البيانات القديمة لسه موجودة
+  if (!Array.isArray(S.transactions[date][workerId])) {
+    S.transactions[date][workerId] =
+      normalizeTransactions({
+        [date]: {
+          [workerId]: S.transactions[date][workerId],
+        },
+      })?.[date]?.[workerId] || [];
+  }
+
+  const transaction = {
+    id: id(),
+    type,
+    amount: value,
+    note: String(note || "").trim(),
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+  };
+
+  S.transactions[date][workerId].push(transaction);
+
+  save();
+
+  return transaction;
+}
+
+function findTransaction(workerId, transactionId) {
+  const transactions = getWorkerTransactions(workerId);
+
+  return (
+    transactions.find((tx) => String(tx.id) === String(transactionId)) || null
+  );
+}
+
+function updateTransaction(workerId, transactionId, changes = {}) {
+  if (!S) return null;
+
+  let found = null;
+
+  Object.entries(S.transactions || {}).forEach(([date, workers]) => {
+    const transactions = workers?.[workerId];
+
+    if (!Array.isArray(transactions)) return;
+
+    const index = transactions.findIndex(
+      (tx) => String(tx.id) === String(transactionId),
+    );
+
+    if (index === -1) return;
+
+    const current = transactions[index];
+
+    const amount =
+      changes.amount !== undefined
+        ? Number(changes.amount)
+        : Number(current.amount);
+
+    const type = changes.type || current.type;
+
+    if (
+      !Number.isFinite(amount) ||
+      amount <= 0 ||
+      !["expense", "overtime"].includes(type)
+    ) {
+      return;
+    }
+
+    transactions[index] = {
+      ...current,
+      type,
+      amount,
+      note:
+        changes.note !== undefined
+          ? String(changes.note || "").trim()
+          : current.note || "",
+      updatedAt: Date.now(),
+    };
+
+    found = transactions[index];
+  });
+
+  if (found) {
+    save();
+  }
+
+  return found;
+}
+
+function deleteTransaction(workerId, transactionId) {
+  if (!S) return null;
+
+  let deleted = null;
+
+  Object.entries(S.transactions || {}).forEach(([date, workers]) => {
+    const transactions = workers?.[workerId];
+
+    if (!Array.isArray(transactions)) return;
+
+    const index = transactions.findIndex(
+      (tx) => String(tx.id) === String(transactionId),
+    );
+
+    if (index === -1) return;
+
+    deleted = transactions[index];
+
+    transactions.splice(index, 1);
+
+    if (transactions.length === 0) {
+      delete workers[workerId];
+    }
+
+    if (Object.keys(workers).length === 0) {
+      delete S.transactions[date];
+    }
+  });
+
+  if (deleted) {
+    save();
+  }
+
+  return deleted;
+}
+
+// ===============
 // Attendance
-// =========================================================
+// ===============
 
 function attendanceValue(workerId, date = today()) {
   if (!S) return null;
@@ -439,9 +690,9 @@ function nextAttendance(value) {
   return value === null ? true : value === true ? false : true;
 }
 
-// =========================================================
+// ===============
 // Group UI helpers
-// =========================================================
+// ===============
 
 function renderGroupInfo(root = document) {
   const groupName = $("[data-group-name]", root);
@@ -466,9 +717,9 @@ function renderGroupSelect(root = document) {
   select.onchange = () => setActiveGroup(select.value);
 }
 
-// =========================================================
+// ===============
 // Modals / UI
-// =========================================================
+// ===============
 
 function openModal(id) {
   $(`#${id}`)?.classList.add("active");
@@ -587,10 +838,10 @@ function setupTheme() {
 //   setupTheme();
 // } catch {}
 
-// =========================================================
+// ===============
 // Service Worker
 // Auto Update + Automatic Reload
-// =========================================================
+// ===============
 
 if ("serviceWorker" in navigator) {
   let refreshing = false;

@@ -14,19 +14,22 @@ function render() {
             const value = attendanceValue(w.id, date);
 
             return `
-        <article class="attendance">
-          <div class="avatar">${w.name[0] || "👤"}</div>
-          <div class="info"><b>${w.name}</b><small>${money(w.rate)} / يوم</small></div>
-          <div class="attendance-tools">
-            <button class="mini-action" data-exp="${w.id}" >مصروف</button>
-            <button class="mini-action" data-over="${w.id}">إضافي</button>
-          </div>
-          <label class="attendance-toggle ${value === true ? "present" : value === false ? "absent" : "empty"}">
-            <input type="checkbox" data-att="${w.id}" ${value === true ? "checked" : ""}>
-            <span>${value === true ? "حاضر" : value === false ? "غائب" : "غير محدد"}</span>
-          </label>
-        </article>
-      `;
+              <article class="attendance">
+                <div class="avatar">${w.name[0] || "👤"}</div>
+                <div class="info">
+                  <a href="worker.html?id=${w.id}" class="link">${w.name || "👤"}</a>
+                  <small>${money(w.rate)} / يوم</small>
+                </div>
+                <div class="attendance-tools">
+                  <button class="mini-action" data-exp="${w.id}" >مصروف</button>
+                  <button class="mini-action" data-over="${w.id}">إضافي</button>
+                </div>
+                <label class="attendance-toggle ${value === true ? "present" : value === false ? "absent" : "empty"}">
+                  <input type="checkbox" data-att="${w.id}" ${value === true ? "checked" : ""}>
+                  <span>${value === true ? "حاضر" : value === false ? "غائب" : "غير محدد"}</span>
+                </label>
+              </article>
+            `;
           })
           .join("")
       : `<div class="card" style="text-align:center;padding:30px;margin-top:20px;">🔎<br>
@@ -82,30 +85,23 @@ $("#transactionForm").onsubmit = (e) => {
   const amount = Number($("#txAmount").value);
 
   if (!w || !Number.isFinite(amount) || amount <= 0) {
-    return toast("أدخل مبلغًا صحيحًا", true, ERROR_NOTIFICATION_COLOR);
+    return toast("أدخل مبلغًا صحيحًا", true, "#ff8e8e");
   }
 
   const type = $("#txType").value;
-
-  /**
-   * المصروف / الإضافي مربوط بتاريخ اليوم المحدد
-   */
   const date = $("#attendanceDate").value || today();
+  const note = $("#txReason")?.value.trim() || "";
 
-  S.transactions ||= {};
-  S.transactions[date] ||= {};
-  S.transactions[date][w.id] ||= {
-    expense: 0,
-    overtime: 0,
-  };
+  const transaction = addTransaction(workerId, type, amount, note, date);
 
-  S.transactions[date][w.id][type] =
-    Number(S.transactions[date][w.id][type] || 0) + amount;
+  if (!transaction) return toast("تعذر تسجيل العملية", true, "#ff8e8e");
 
   save();
   closeModal("transactionModal");
+
   e.target.reset();
   render();
+
   toast(
     type === "expense" ? "تم تسجيل المصروف" : "تم تسجيل الإضافي",
     null,

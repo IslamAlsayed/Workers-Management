@@ -28,9 +28,9 @@ const ASSETS = [
   "./manifest.json",
 ];
 
-// =========================================================
+// ==================
 // Install
-// =========================================================
+// ==================
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -41,9 +41,9 @@ self.addEventListener("install", (event) => {
   );
 });
 
-// =========================================================
+// ==================
 // Activate
-// =========================================================
+// ==================
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
@@ -64,10 +64,10 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-// =========================================================
+// ==================
 // Fetch
 // Network First
-// =========================================================
+// ==================
 
 self.addEventListener("fetch", (event) => {
   const request = event.request;
@@ -105,9 +105,9 @@ self.addEventListener("fetch", (event) => {
       })
 
       .catch(() => {
-        // ===================================================
+        // ============
         // Offline
-        // ===================================================
+        // ============
 
         return caches.match(request).then((cachedResponse) => {
           if (cachedResponse) {

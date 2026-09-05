@@ -21,7 +21,7 @@
                 <div>
                     <small>اليوم</small>
                     <h1 id="welcomeMessageInner">صباح الخير يا معلم 👋</h1>
-                    <p id="adminDescriptionInner">خلّي حسابات الشغل ماشية من غير ورق أو أنترنت.</p>
+                    <p id="adminDescriptionInner">خلّي حسابات الشغل ماشية <b>من غير ورق</b> أو <b>أنترنت</b>.</p>
                 </div>
                 <time id="today"></time>
             </section>
@@ -132,10 +132,19 @@
             if (!w || amount <= 0) return toast("أدخل مبلغًا صحيحًا", true, ERROR_NOTIFICATION_COLOR);
 
             const date = today();
-            S.transactions ||= {};
-            S.transactions[date] ||= {};
-            S.transactions[date][w.id] ||= { expense: 0, overtime: 0 };
-            S.transactions[date][w.id][type] = Number(S.transactions[date][w.id][type] || 0) + amount;
+            const note = $("#txNote")?.value.trim() || "";
+
+            const transaction = addTransaction(
+                workerId,
+                type,
+                amount,
+                note,
+                date,
+            );
+
+            if (!transaction) {
+                return toast("تعذر تسجيل العملية", true, "#ff8e8e");
+            }
 
             save();
             closeModal("transactionModal");

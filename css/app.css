@@ -166,6 +166,9 @@ body.dark {
   margin-top: 6px;
   line-height: 1.6;
 }
+.welcome p b {
+  color: var(--p);
+}
 @media (max-width: 500px) {
   .welcome h1,
   .heading h1 {
@@ -341,7 +344,7 @@ body.dark {
   display: flex;
   align-items: center;
   gap: 8px;
-  /* margin-bottom: 12px; */
+  margin-bottom: 20px;
   color: var(--m);
   box-shadow: var(--shadow);
 }
@@ -359,6 +362,9 @@ body.dark {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 }
+#attendanceList {
+  gap: 12px;
+}
 .worker,
 .attendance,
 .setting,
@@ -374,6 +380,13 @@ body.dark {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+@media (max-width: 500px) {
+  .worker,
+  .attendance {
+    padding: 6px;
+    border-radius: 9px;
+  }
 }
 .avatar {
   width: 35px;
@@ -583,7 +596,7 @@ label.form {
   color: var(--m);
   font-size: 11px;
   font-weight: 800;
-  /* margin-bottom: 12px; */
+  margin-bottom: 20px;
 }
 .date input,
 .dates input {
@@ -745,7 +758,7 @@ label.form {
   flex: 1;
   border: 0;
   background: none;
-  color: #94a3b8;
+  color: #96b894;
   border-radius: 13px;
   display: flex;
   flex-direction: column;
